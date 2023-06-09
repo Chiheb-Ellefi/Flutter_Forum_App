@@ -72,11 +72,7 @@ class _TopicsWidgetState extends State<TopicsWidget> {
         toolbarHeight: 70,
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                print(myTags);
-              });
-            },
+            onPressed: () {},
             icon: const Icon(
               Icons.search,
             ),

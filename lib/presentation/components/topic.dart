@@ -99,7 +99,9 @@ class _TopicState extends State<Topic> {
                           )),
                       onRatingUpdate: (rating) {},
                       allowHalfRating: true,
-                      initialRating: widget.rating / widget.raters,
+                      initialRating: widget.raters != 0
+                          ? widget.rating / widget.raters
+                          : 0,
                       ignoreGestures: true,
                       itemSize: 20,
                       unratedColor: Colors.grey.shade200,

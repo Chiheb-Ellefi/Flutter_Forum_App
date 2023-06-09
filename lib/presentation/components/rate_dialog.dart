@@ -24,18 +24,18 @@ class _RatingDialogState extends State<RatingDialog> {
         FirebaseFirestore.instance.collection(topicsCollection);
     await userRef.where('uid', isEqualTo: widget.uid).get().then((value) {
       print(value.size);
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         element.reference.update({
           'rating': widget.rating +
               rate, // Update the 'rating' field with the new rating value
           'raters': widget.raters + 1,
           // Add other fields to update here
         });
-      });
+      }
     });
   }
 
-  double rate = 1.2;
+  double rate = 0.0;
 
   @override
   Widget build(BuildContext context) {

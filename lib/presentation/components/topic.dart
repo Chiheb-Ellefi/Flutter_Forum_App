@@ -109,21 +109,22 @@ class _TopicState extends State<Topic> {
                 const SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 200,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.image.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Image.network(
-                        widget.image[index],
+                if (widget.image.isNotEmpty)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.image.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Image.network(
+                          widget.image[index],
+                        ),
                       ),
                     ),
                   ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),

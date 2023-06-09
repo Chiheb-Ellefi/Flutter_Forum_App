@@ -284,6 +284,8 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
                 height: 20,
               ),
               TextField(
+                  maxLines: 5,
+                  minLines: 1,
                   controller: _description,
                   decoration: InputDecoration(
                     hintText: 'Topic description',

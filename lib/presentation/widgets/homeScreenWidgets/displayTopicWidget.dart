@@ -281,9 +281,16 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                   isListViewVisible = !isListViewVisible;
                 });
               },
-              child: const Text(
-                'Comments',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Comments',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                  ),
+                  Icon(FontAwesomeIcons.message),
+                ],
               ),
             ),
             Visibility(
@@ -307,6 +314,9 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                 },
               ),
             ),
+            const SizedBox(
+              height: 50,
+            )
           ],
         ),
       ),

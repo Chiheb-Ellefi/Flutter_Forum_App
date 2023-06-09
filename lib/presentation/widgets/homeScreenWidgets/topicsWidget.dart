@@ -10,48 +10,87 @@ import 'package:my_project/presentation/components/tagBox.dart';
 import 'package:my_project/presentation/components/topic.dart';
 
 class TopicsWidget extends StatefulWidget {
-  const TopicsWidget({super.key});
+  const TopicsWidget({Key? key}) : super(key: key);
 
   @override
-  State<TopicsWidget> createState() => _TopicsWidgetState();
+  _TopicsWidgetState createState() => _TopicsWidgetState();
 }
 
 class _TopicsWidgetState extends State<TopicsWidget> {
   final tags = ['Sports', 'Tourism', 'Gaming', 'Web', 'Mobile', 'Event', 'TVs'];
-  final queryTopic = FirebaseFirestore.instance
-      .collection(topicsCollection)
-      .withConverter<TopicModel>(
-          fromFirestore: (snapshot, _) => TopicModel.fromMap(snapshot.data()!),
-          toFirestore: (topic, _) => topic.toMap());
+  final myTags = <String>[];
+  late Query<TopicModel> queryTopic;
+
+  void initializeQuery() {
+    if (myTags.isNotEmpty) {
+      queryTopic = FirebaseFirestore.instance
+          .collection(topicsCollection)
+          .where('tags', arrayContainsAny: myTags)
+          .withConverter<TopicModel>(
+            fromFirestore: (snapshot, _) =>
+                TopicModel.fromMap(snapshot.data()!),
+            toFirestore: (topic, _) => topic.toMap(),
+          );
+    } else {
+      queryTopic = FirebaseFirestore.instance
+          .collection(topicsCollection)
+          .withConverter<TopicModel>(
+            fromFirestore: (snapshot, _) =>
+                TopicModel.fromMap(snapshot.data()!),
+            toFirestore: (topic, _) => topic.toMap(),
+          );
+    }
+  }
+
+  bool isTagEnabled(String tag) {
+    return myTags.contains(tag);
+  }
+
+  void toggleTag(String tag) {
+    setState(() {
+      if (isTagEnabled(tag)) {
+        myTags.remove(tag);
+      } else {
+        myTags.add(tag);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    initializeQuery();
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-          title: const Text(
-            'Topics',
-            style: TextStyle(color: Colors.black87, fontSize: 25),
+        title: const Text(
+          'Topics',
+          style: TextStyle(color: Colors.black87, fontSize: 25),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 70,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                print(myTags);
+              });
+            },
+            icon: const Icon(
+              Icons.search,
+            ),
+            iconSize: 30,
+            color: Colors.black87,
           ),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 70,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-              ),
-              iconSize: 30,
-              color: Colors.black87,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-              iconSize: 25,
-              color: Colors.black87,
-            ),
-          ]),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(FontAwesomeIcons.bell),
+            iconSize: 25,
+            color: Colors.black87,
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Container(
@@ -61,7 +100,19 @@ class _TopicsWidgetState extends State<TopicsWidget> {
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: tags.length,
-                itemBuilder: (context, index) => TagBox(text: tags[index])),
+                itemBuilder: (context, index) {
+                  final tag = tags[index];
+                  final isEnabled = isTagEnabled(tag);
+                  return GestureDetector(
+                    onTap: () {
+                      toggleTag(tag);
+                    },
+                    child: TagBox(
+                      text: tag,
+                      enabled: isEnabled,
+                    ),
+                  );
+                }),
           ),
           Expanded(
             child: FirestoreListViewWidget<TopicModel>(

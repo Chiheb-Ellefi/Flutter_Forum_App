@@ -114,6 +114,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
         raters: 0,
         tags: myTags,
         files: myImages,
+        authorUid: uid,
       );
       await _topic.set(topicModel.toMap());
       // ignore: use_build_context_synchronously

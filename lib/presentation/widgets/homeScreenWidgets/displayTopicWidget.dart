@@ -1,33 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/config/themes.dart';
+import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/topic_model/comment_model.dart';
 import 'package:my_project/presentation/components/comment.dart';
+import 'package:my_project/presentation/components/rate_dialog.dart';
 import 'package:my_project/presentation/components/tag.dart';
 import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
 class DisplayTopicWidget extends StatefulWidget {
-  DisplayTopicWidget(
-      {Key? key,
-      required this.title,
-      required this.userName,
-      required this.date,
-      required this.rating,
-      required this.image,
-      required this.text,
-      required this.tags,
-      required this.uid,
-      required this.raters})
-      : super(key: key);
+  DisplayTopicWidget({
+    Key? key,
+    required this.title,
+    required this.userName,
+    required this.date,
+    required this.rating,
+    required this.image,
+    required this.text,
+    required this.tags,
+    required this.uid,
+    required this.raters,
+  }) : super(key: key);
+
   String uid;
   String title;
   String userName;
   DateTime date;
   double rating;
   String text;
-  List<String> tags;
-  List<String> image;
+  List<dynamic> tags;
+  List<dynamic> image;
   int raters;
 
   @override
@@ -38,6 +43,41 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   bool isListViewVisible = false;
   bool isCommentListVisible = false;
   bool isLiked = false;
+  List<dynamic>? myComments;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  Future<void> getComments() async {
+    final queryTopic = FirebaseFirestore.instance
+        .collection(topicsCollection)
+        .where('uid', isEqualTo: widget.uid)
+        .get();
+
+    final value = await queryTopic;
+    final commentsList = <CommentModel>[];
+
+    for (final element in value.docs) {
+      final QuerySnapshot snapshot =
+          await element.reference.collection(widget.uid + 'comments').get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final comments = snapshot.docs.map((doc) {
+          final commentData = doc.data() as Map<String, dynamic>;
+          return CommentModel.fromMap(commentData);
+        }).toList();
+
+        commentsList.addAll(comments);
+      }
+    }
+
+    setState(() {
+      myComments = commentsList.map((e) => e.toMap()).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +108,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                       ),
                       InkWell(
                         onTap: () async {
-                          /*  await showDialog(
+                          await showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return RatingDialog(
@@ -77,7 +117,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                                 rating: widget.rating,
                               );
                             },
-                          ); */
+                          );
                         },
                         child: RatingBar.builder(
                           itemBuilder: ((context, _) => const Icon(
@@ -241,43 +281,32 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                   isListViewVisible = !isListViewVisible;
                 });
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Comments',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.message,
-                      size: 25,
-                    ),
-                  ),
-                ],
+              child: const Text(
+                'Comments',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            if (isListViewVisible)
-              ListView.builder(
-                shrinkWrap:
-                    true, // Allow the ListView to take up all available vertical space
-                physics:
-                    const NeverScrollableScrollPhysics(), // Disable scrolling for the ListView
-                itemCount: 5,
-                itemBuilder: (context, index) => Comment(
-                  text: "its a very good topic  its a very good topic ",
-                  author: 'Chiheb Ellefi',
-                  date: '',
-                  likes: '200',
-                  isLiked: isLiked,
-                  replies: '200',
-                  isCommentListVisible: isCommentListVisible,
-                ),
+            Visibility(
+              visible: isListViewVisible,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: myComments != null ? myComments!.length : 0,
+                itemBuilder: (context, index) {
+                  final comment = myComments![index];
+                  return Comment(
+                    uid: widget.uid,
+                    text: comment['text'],
+                    author: comment['author'],
+                    date: comment['date'],
+                    likes: comment['likes'],
+                    replies: comment['replies'],
+                    isLiked: comment['isLiked'],
+                    isCommentListVisible: false,
+                  );
+                },
               ),
+            ),
           ],
         ),
       ),

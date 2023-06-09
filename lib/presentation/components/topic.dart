@@ -23,8 +23,8 @@ class Topic extends StatefulWidget {
   DateTime date;
   double rating;
   String text;
-  List<String> tags;
-  List<String> image;
+  List<dynamic> tags;
+  List<dynamic> image;
   int raters;
 
   @override

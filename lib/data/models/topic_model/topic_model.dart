@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
 import 'package:my_project/data/models/topic_model/comment_model.dart';
 
 class TopicModel {
@@ -11,9 +13,9 @@ class TopicModel {
   DateTime? date;
   double? rating;
   int? raters;
-  List<String>? tags;
-  List<String>? files;
-  List<CommentModel>? comments;
+  List<dynamic>? tags;
+  List<dynamic>? files;
+  String? authorUid;
   TopicModel({
     this.uid,
     this.title,
@@ -24,6 +26,7 @@ class TopicModel {
     this.raters,
     this.tags,
     this.files,
+    this.authorUid,
   });
 
   TopicModel copyWith({
@@ -34,8 +37,9 @@ class TopicModel {
     DateTime? date,
     double? rating,
     int? raters,
-    List<String>? tags,
-    List<String>? files,
+    List<dynamic>? tags,
+    List<dynamic>? files,
+    String? authorUid,
   }) {
     return TopicModel(
       uid: uid ?? this.uid,
@@ -47,6 +51,7 @@ class TopicModel {
       raters: raters ?? this.raters,
       tags: tags ?? this.tags,
       files: files ?? this.files,
+      authorUid: authorUid ?? this.authorUid,
     );
   }
 
@@ -56,27 +61,34 @@ class TopicModel {
       'title': title,
       'description': description,
       'author': author,
-      'date': date!.millisecondsSinceEpoch,
+      'date': date?.millisecondsSinceEpoch,
       'rating': rating,
       'raters': raters,
       'tags': tags,
       'files': files,
+      'authorUid': authorUid,
     };
   }
 
   factory TopicModel.fromMap(Map<String, dynamic> map) {
     return TopicModel(
-      uid: map['uid'] as String,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      author: map['author'] as String,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
-      rating: map['rating'] as double,
-      raters: map['raters'] as int,
-      tags: List<String>.from(
-          (map['tags'] as List<dynamic>).map<String>((tag) => tag.toString())),
-      files: List<String>.from((map['files'] as List<dynamic>)
-          .map<String>((file) => file.toString())),
+      uid: map['uid'] != null ? map['uid'] as String : null,
+      title: map['title'] != null ? map['title'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
+      author: map['author'] != null ? map['author'] as String : null,
+      date: map['date'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['date'] as int)
+          : null,
+      rating: map['rating'] != null ? map['rating'] as double : null,
+      raters: map['raters'] != null ? map['raters'] as int : null,
+      tags: map['tags'] != null
+          ? List<dynamic>.from((map['tags'] as List<dynamic>))
+          : null,
+      files: map['files'] != null
+          ? List<dynamic>.from((map['files'] as List<dynamic>))
+          : null,
+      authorUid: map['authorUid'] != null ? map['authorUid'] as String : null,
     );
   }
 
@@ -87,7 +99,7 @@ class TopicModel {
 
   @override
   String toString() {
-    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files)';
+    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files, authorUid: $authorUid)';
   }
 
   @override
@@ -102,7 +114,8 @@ class TopicModel {
         other.rating == rating &&
         other.raters == raters &&
         listEquals(other.tags, tags) &&
-        listEquals(other.files, files);
+        listEquals(other.files, files) &&
+        other.authorUid == authorUid;
   }
 
   @override
@@ -115,6 +128,7 @@ class TopicModel {
         rating.hashCode ^
         raters.hashCode ^
         tags.hashCode ^
-        files.hashCode;
+        files.hashCode ^
+        authorUid.hashCode;
   }
 }

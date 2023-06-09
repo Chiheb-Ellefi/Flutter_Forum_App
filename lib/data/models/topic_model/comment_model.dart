@@ -6,11 +6,15 @@ class CommentModel {
   DateTime? date;
   String? text;
   int? likes;
+  bool? isLiked;
+  int? replies;
   CommentModel({
     this.author,
     this.date,
     this.text,
     this.likes,
+    this.isLiked,
+    this.replies,
   });
 
   CommentModel copyWith({
@@ -18,12 +22,16 @@ class CommentModel {
     DateTime? date,
     String? text,
     int? likes,
+    bool? isLiked,
+    int? replies,
   }) {
     return CommentModel(
       author: author ?? this.author,
       date: date ?? this.date,
       text: text ?? this.text,
       likes: likes ?? this.likes,
+      isLiked: isLiked ?? this.isLiked,
+      replies: replies ?? this.replies,
     );
   }
 
@@ -33,6 +41,8 @@ class CommentModel {
       'date': date?.millisecondsSinceEpoch,
       'text': text,
       'likes': likes,
+      'isLiked': isLiked,
+      'replies': replies,
     };
   }
 
@@ -44,6 +54,8 @@ class CommentModel {
           : null,
       text: map['text'] != null ? map['text'] as String : null,
       likes: map['likes'] != null ? map['likes'] as int : null,
+      isLiked: map['isLiked'] != null ? map['isLiked'] as bool : null,
+      replies: map['replies'] != null ? map['replies'] as int : null,
     );
   }
 
@@ -54,7 +66,7 @@ class CommentModel {
 
   @override
   String toString() {
-    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes)';
+    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes, isLiked: $isLiked, replies: $replies)';
   }
 
   @override
@@ -64,11 +76,18 @@ class CommentModel {
     return other.author == author &&
         other.date == date &&
         other.text == text &&
-        other.likes == likes;
+        other.likes == likes &&
+        other.isLiked == isLiked &&
+        other.replies == replies;
   }
 
   @override
   int get hashCode {
-    return author.hashCode ^ date.hashCode ^ text.hashCode ^ likes.hashCode;
+    return author.hashCode ^
+        date.hashCode ^
+        text.hashCode ^
+        likes.hashCode ^
+        isLiked.hashCode ^
+        replies.hashCode;
   }
 }

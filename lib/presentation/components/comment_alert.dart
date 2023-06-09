@@ -25,6 +25,8 @@ class _CommentAlertState extends State<CommentAlert> {
         text: _controller.text.trim(),
         likes: 0,
         date: DateTime.now(),
+        replies: 0,
+        isLiked: false,
       );
 
       CollectionReference topicRef =
@@ -56,7 +58,7 @@ class _CommentAlertState extends State<CommentAlert> {
               Navigator.pop(context, _controller.text);
             },
             style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
-            child: const Text('Rate'),
+            child: const Text('Comment'),
           ),
         )
       ],

@@ -142,7 +142,8 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
           style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
           onPressed: () {
             // Call the method to add an item to the data source
-            addItemToDataSource(str);
+            addItemToDataSource(str.substring(0, 1).toUpperCase() +
+                str.substring(1).toLowerCase());
             Navigator.pop(context);
           },
           child: const Text('Add tag'),

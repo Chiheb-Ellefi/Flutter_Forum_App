@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "707243996515",
+    "project_id": "my-pfa-project",
+    "storage_bucket": "my-pfa-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707243996515:android:746b0e7dbaad7b5a06cf56",
+        "android_client_info": {
+          "package_name": "com.example.my_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707243996515-ppi6241l6qkk3s31rimm8tmj5j2qd47e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN2OaA6Xm3apM22QRCyVGa69YPvQC_FHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707243996515-ppi6241l6qkk3s31rimm8tmj5j2qd47e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

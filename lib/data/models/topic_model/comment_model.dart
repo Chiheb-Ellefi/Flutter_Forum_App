@@ -1,19 +1,19 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class CommentModel {
   String? author;
   DateTime? date;
   String? text;
-  int? likes;
-  bool? isLiked;
+  List<dynamic>? likes;
   int? replies;
   CommentModel({
     this.author,
     this.date,
     this.text,
     this.likes,
-    this.isLiked,
     this.replies,
   });
 
@@ -21,8 +21,7 @@ class CommentModel {
     String? author,
     DateTime? date,
     String? text,
-    int? likes,
-    bool? isLiked,
+    List<dynamic>? likes,
     int? replies,
   }) {
     return CommentModel(
@@ -30,7 +29,6 @@ class CommentModel {
       date: date ?? this.date,
       text: text ?? this.text,
       likes: likes ?? this.likes,
-      isLiked: isLiked ?? this.isLiked,
       replies: replies ?? this.replies,
     );
   }
@@ -41,7 +39,6 @@ class CommentModel {
       'date': date?.millisecondsSinceEpoch,
       'text': text,
       'likes': likes,
-      'isLiked': isLiked,
       'replies': replies,
     };
   }
@@ -53,8 +50,9 @@ class CommentModel {
           ? DateTime.fromMillisecondsSinceEpoch(map['date'] as int)
           : null,
       text: map['text'] != null ? map['text'] as String : null,
-      likes: map['likes'] != null ? map['likes'] as int : null,
-      isLiked: map['isLiked'] != null ? map['isLiked'] as bool : null,
+      likes: map['likes'] != null
+          ? List<dynamic>.from((map['likes'] as List<dynamic>))
+          : null,
       replies: map['replies'] != null ? map['replies'] as int : null,
     );
   }
@@ -66,7 +64,7 @@ class CommentModel {
 
   @override
   String toString() {
-    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes, isLiked: $isLiked, replies: $replies)';
+    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes, replies: $replies)';
   }
 
   @override
@@ -76,8 +74,7 @@ class CommentModel {
     return other.author == author &&
         other.date == date &&
         other.text == text &&
-        other.likes == likes &&
-        other.isLiked == isLiked &&
+        listEquals(other.likes, likes) &&
         other.replies == replies;
   }
 
@@ -87,7 +84,6 @@ class CommentModel {
         date.hashCode ^
         text.hashCode ^
         likes.hashCode ^
-        isLiked.hashCode ^
         replies.hashCode;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
@@ -14,15 +15,13 @@ class Comment extends StatefulWidget {
       required this.likes,
       required this.replies,
       required this.isCommentListVisible,
-      required this.isLiked,
       required this.uid});
   String author;
   String text;
   int date;
-  int likes;
+  List<dynamic>? likes;
   int replies;
   bool isCommentListVisible;
-  bool isLiked;
   String uid;
 
   @override
@@ -47,18 +46,22 @@ class _CommentState extends State<Comment> {
 
       if (snapshot.docs.isNotEmpty) {
         final comments = snapshot.docs.forEach((element) {
-          element.reference.update({'likes': likes, 'isLiked': isLiked});
+          element.reference.update({
+            'likes': likes,
+          });
         });
       }
     }
   }
 
-  int likes = 0;
+  List<dynamic>? likes;
   bool isLiked = false;
-
+  final userUid = FirebaseAuth.instance.currentUser!.uid;
+  Icon? myIcon;
   @override
   Widget build(BuildContext context) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(widget.date);
+    isLiked = widget.likes!.contains(userUid);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -124,24 +127,27 @@ class _CommentState extends State<Comment> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        widget.isLiked = !widget.isLiked;
-                        widget.likes = widget.isLiked
-                            ? widget.likes + 1
-                            : widget.likes - 1;
-                        likes = widget.likes;
-                        isLiked = widget.isLiked;
+                        if (isLiked) {
+                          likes = widget.likes;
+                          widget.likes!.remove(userUid);
+                          likes = widget.likes;
+                          isLiked = !isLiked;
+                        } else {
+                          likes = widget.likes;
+                          widget.likes!.add(userUid);
+                          likes = widget.likes;
+                          isLiked = !isLiked;
+                        }
                       });
                       updateLike();
                     },
                     icon: Icon(
-                      widget.isLiked
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_border,
-                      color: widget.isLiked ? Colors.red : Colors.black,
+                      isLiked ? Icons.favorite_rounded : Icons.favorite_border,
+                      color: isLiked ? Colors.red : Colors.black,
                       size: 28,
                     ),
                   ),
-                  Text(widget.likes.toString(),
+                  Text(widget.likes!.length.toString(),
                       style: const TextStyle(fontSize: 17)),
                 ],
               ),
@@ -183,9 +189,8 @@ class _CommentState extends State<Comment> {
                   text: "Reply $index", // Replace with actual comment text
                   author: 'Author $index', // Replace with actual author name
                   date: widget.date,
-                  likes: 200, // Replace with actual likes count
+                  likes: ['hello'], // Replace with actual likes count
                   replies: 10, // Replace with actual replies count
-                  isLiked: false, // Replace with actual liked status
                   isCommentListVisible:
                       false, // Replace with actual visibility status
                 ),

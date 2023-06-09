@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
@@ -17,16 +18,16 @@ class CommentAlert extends StatefulWidget {
 }
 
 class _CommentAlertState extends State<CommentAlert> {
+  final userUid = FirebaseAuth.instance.currentUser!.uid;
   final _controller = TextEditingController();
   addComment() async {
     try {
       CommentModel myComment = CommentModel(
         author: widget.author,
         text: _controller.text.trim(),
-        likes: 0,
+        likes: [],
         date: DateTime.now(),
         replies: 0,
-        isLiked: false,
       );
 
       CollectionReference topicRef =
@@ -55,7 +56,7 @@ class _CommentAlertState extends State<CommentAlert> {
           child: ElevatedButton(
             onPressed: () {
               addComment();
-              Navigator.pop(context, _controller.text);
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
             child: const Text('Comment'),

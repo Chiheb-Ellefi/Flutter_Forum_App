@@ -309,7 +309,6 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                     date: comment['date'],
                     likes: comment['likes'],
                     replies: comment['replies'],
-                    isLiked: comment['isLiked'],
                     isCommentListVisible: false,
                   );
                 },

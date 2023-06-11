@@ -34,6 +34,7 @@ class TermsAlert extends StatefulWidget {
 }
 
 class _TermsAlertState extends State<TermsAlert> {
+  String? imageUrl;
   CollectionReference get _users =>
       FirebaseFirestore.instance.collection(usersCollection);
   String? myPath;
@@ -60,6 +61,7 @@ class _TermsAlertState extends State<TermsAlert> {
         myPath = 'files/profile_pic/$imageName';
         final ref = FirebaseStorage.instance.ref().child(myPath!);
         await ref.putFile(widget.myImage!);
+        imageUrl = await ref.getDownloadURL();
       }
       UserModel userModel = UserModel(
           uid: result.user!.uid,
@@ -67,7 +69,7 @@ class _TermsAlertState extends State<TermsAlert> {
           email: result.user!.email ?? "No email",
           phoneNumber: widget.phoneNumber.trim(),
           dateOfBirth: widget.dob ?? DateTime.now(),
-          profilePicture: myPath ?? avatarDefault,
+          profilePicture: imageUrl ?? avatarDefault,
           followers: [],
           following: [],
           topics: [],

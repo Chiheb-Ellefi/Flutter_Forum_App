@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/presentation/widgets/homeScreenWidgets/settings_widget.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/topicsWidget.dart';
 
 class HomeScreenWidget extends StatefulWidget {
@@ -25,12 +26,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
         style: TextStyle(fontSize: 70),
       ),
     ),
-    const Center(
-      child: Text(
-        'Settings',
-        style: TextStyle(fontSize: 70),
-      ),
-    ),
+    Settings(),
   ];
   @override
   Widget build(BuildContext context) {

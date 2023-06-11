@@ -23,7 +23,6 @@ class _RatingDialogState extends State<RatingDialog> {
     CollectionReference userRef =
         FirebaseFirestore.instance.collection(topicsCollection);
     await userRef.where('uid', isEqualTo: widget.uid).get().then((value) {
-      print(value.size);
       for (var element in value.docs) {
         element.reference.update({
           'rating': widget.rating +

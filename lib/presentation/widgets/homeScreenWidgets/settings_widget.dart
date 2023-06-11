@@ -6,6 +6,8 @@ import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/contant_values.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
+import 'package:my_project/presentation/pages/profile/edit_profile.dart';
+import 'package:my_project/routes/app_router.dart';
 
 class Settings extends StatefulWidget {
   Settings({Key? key}) : super(key: key);
@@ -23,6 +25,10 @@ class _SettingsState extends State<Settings> {
 
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
+  void handleProfileUpdated() {
+    // Perform any necessary actions after profile update, such as fetching updated data
+    getProfilePic();
+  }
 
   Future<void> getProfilePic() async {
     await userRef
@@ -89,10 +95,15 @@ class _SettingsState extends State<Settings> {
                 height: 10,
               ),
               CircleAvatar(
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.grey.shade200,
                 radius: 70,
-                backgroundImage: NetworkImage(
+                foregroundImage: NetworkImage(
                   image ?? avatarDefault,
+                ),
+                child: const Icon(
+                  FontAwesomeIcons.camera,
+                  size: 50,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(
@@ -115,7 +126,13 @@ class _SettingsState extends State<Settings> {
                 height: 10,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => EditProile(
+                              onProfileUpdated: handleProfileUpdated)));
+                },
                 style: ElevatedButton.styleFrom(
                     elevation: 0, backgroundColor: myBlue2),
                 child: const Text(

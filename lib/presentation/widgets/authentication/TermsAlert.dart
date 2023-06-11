@@ -114,7 +114,7 @@ class _TermsAlertState extends State<TermsAlert> {
 
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => VerifyEmailPage()));
+                      builder: (context) => const VerifyEmailPage()));
                 }))
       ],
     );

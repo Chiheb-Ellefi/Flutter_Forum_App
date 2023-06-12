@@ -55,8 +55,10 @@ class _CommentAlertState extends State<CommentAlert> {
         Center(
           child: ElevatedButton(
             onPressed: () {
-              addComment();
-              Navigator.pop(context);
+              if (_controller.text.trim().isNotEmpty) {
+                addComment();
+                Navigator.of(context).pop();
+              }
             },
             style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
             child: const Text('Comment'),

@@ -6,8 +6,8 @@ import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/contant_values.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
+import 'package:my_project/presentation/components/change_password/old_password.dart';
 import 'package:my_project/presentation/pages/profile/edit_profile.dart';
-import 'package:my_project/routes/app_router.dart';
 
 class Settings extends StatefulWidget {
   Settings({Key? key}) : super(key: key);
@@ -38,13 +38,13 @@ class _SettingsState extends State<Settings> {
         )
         .get()
         .then((value) {
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
         myData = UserModel.fromMap(data!);
         image = myData.profilePicture;
         userName = myData.username;
         email = myData.email;
-      });
+      }
     });
     setState(() {}); // Update the widget's state after retrieving the data
   }
@@ -214,7 +214,11 @@ class _SettingsState extends State<Settings> {
                       style: TextStyle(fontSize: 20),
                     ),
                     trailing: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => OldPassword());
+                      },
                       icon: const Icon(
                         FontAwesomeIcons.chevronRight,
                       ),

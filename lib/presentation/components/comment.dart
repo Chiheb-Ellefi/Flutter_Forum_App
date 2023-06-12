@@ -20,7 +20,7 @@ class Comment extends StatefulWidget {
   String text;
   int date;
   List<dynamic>? likes;
-  int replies;
+  List<dynamic> replies;
   bool isCommentListVisible;
   String uid;
 
@@ -55,11 +55,59 @@ class _CommentState extends State<Comment> {
   }
 
   final reply = TextEditingController();
+  CommentModel? myReply;
+  CommentModel getReply() {
+    CommentModel myReply = CommentModel(
+      author: widget.author,
+      text: reply.text.trim(),
+      likes: [],
+      date: DateTime.now(),
+      replies: [],
+    );
+    return myReply;
+  }
+
+  updateReplies() async {
+    try {
+      final queryTopic = FirebaseFirestore.instance
+          .collection(topicsCollection)
+          .where('uid', isEqualTo: widget.uid)
+          .get();
+
+      final value = await queryTopic;
+      final commentsList = <CommentModel>[];
+      List<dynamic> replies = widget.replies;
+      replies.add(myReply!.toMap());
+      for (final element in value.docs) {
+        final QuerySnapshot snapshot = await element.reference
+            .collection(widget.uid + 'comments')
+            .where('date', isEqualTo: widget.date)
+            .get();
+
+        if (snapshot.docs.isNotEmpty) {
+          final comments = snapshot.docs.forEach((element) {
+            element.reference.update({
+              'replies': replies,
+            }).then((_) {
+              reply.clear(); // Clear the text editing controller
+              setState(() {}); // Rebuild the widget
+            });
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   List<dynamic>? likes;
   bool isLiked = false;
   final userUid = FirebaseAuth.instance.currentUser!.uid;
   Icon? myIcon;
+  List<dynamic>? myComments;
+  List<dynamic>? myReplies;
+  String len = '';
+
   @override
   Widget build(BuildContext context) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(widget.date);
@@ -181,7 +229,7 @@ class _CommentState extends State<Comment> {
                         color: Colors.black87),
                   ),
                   Text(
-                    widget.replies.toString(),
+                    widget.replies.length.toString(),
                     style: const TextStyle(fontSize: 17),
                   ),
                 ],
@@ -194,33 +242,40 @@ class _CommentState extends State<Comment> {
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: TextField(
+                    controller: reply,
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              FontAwesomeIcons.reply,
-                              color: Colors.black87,
-                            )),
+                          onPressed: () {
+                            myReply = getReply();
+                            updateReplies();
+                          },
+                          icon: const Icon(
+                            FontAwesomeIcons.reply,
+                            color: Colors.black87,
+                          ),
+                        ),
                         hintText: 'Reply to this comment '),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 2,
-                  itemBuilder: (context, index) => Comment(
-                    uid: widget.uid,
-                    text: "Reply $index", // Replace with actual comment text
-                    author: 'Author $index', // Replace with actual author name
-                    date: widget.date,
-                    likes: ['hello'], // Replace with actual likes count
-                    replies: 10, // Replace with actual replies count
-                    isCommentListVisible:
-                        false, // Replace with actual visibility status
-                  ),
+                  itemCount: widget.replies.length,
+                  itemBuilder: (context, index) {
+                    final comment = widget.replies[index];
+                    return Comment(
+                      uid: widget.uid,
+                      text: comment['text'],
+                      author: comment['author'],
+                      date: comment['date'],
+                      likes: comment['likes'],
+                      replies: comment['replies'],
+                      isCommentListVisible: false,
+                    );
+                  },
                 ),
               ],
             ),

@@ -27,7 +27,7 @@ class _CommentAlertState extends State<CommentAlert> {
         text: _controller.text.trim(),
         likes: [],
         date: DateTime.now(),
-        replies: 0,
+        replies: [],
       );
 
       CollectionReference topicRef =

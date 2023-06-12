@@ -307,7 +307,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Visibility(

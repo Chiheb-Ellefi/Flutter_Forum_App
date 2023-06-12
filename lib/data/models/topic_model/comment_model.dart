@@ -8,7 +8,7 @@ class CommentModel {
   DateTime? date;
   String? text;
   List<dynamic>? likes;
-  int? replies;
+  List<dynamic>? replies;
   CommentModel({
     this.author,
     this.date,
@@ -22,7 +22,7 @@ class CommentModel {
     DateTime? date,
     String? text,
     List<dynamic>? likes,
-    int? replies,
+    List<dynamic>? replies,
   }) {
     return CommentModel(
       author: author ?? this.author,
@@ -53,7 +53,9 @@ class CommentModel {
       likes: map['likes'] != null
           ? List<dynamic>.from((map['likes'] as List<dynamic>))
           : null,
-      replies: map['replies'] != null ? map['replies'] as int : null,
+      replies: map['replies'] != null
+          ? List<dynamic>.from((map['replies'] as List<dynamic>))
+          : null,
     );
   }
 
@@ -75,7 +77,7 @@ class CommentModel {
         other.date == date &&
         other.text == text &&
         listEquals(other.likes, likes) &&
-        other.replies == replies;
+        listEquals(other.replies, replies);
   }
 
   @override

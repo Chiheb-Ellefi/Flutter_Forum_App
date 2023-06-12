@@ -44,6 +44,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   bool isCommentListVisible = false;
   bool isLiked = false;
   List<dynamic>? myComments;
+  String len = '';
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
     for (final element in value.docs) {
       final QuerySnapshot snapshot =
           await element.reference.collection(widget.uid + 'comments').get();
+      len = snapshot.size.toString();
 
       if (snapshot.docs.isNotEmpty) {
         final comments = snapshot.docs.map((doc) {
@@ -282,17 +284,31 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                   isListViewVisible = !isListViewVisible;
                 });
               },
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Comments',
+                  const Text(
+                    'Comments ',
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                   ),
-                  Icon(FontAwesomeIcons.message),
+                  Row(
+                    children: [
+                      Text(len,
+                          style: const TextStyle(
+                            fontSize: 25,
+                          )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      const Icon(FontAwesomeIcons.message),
+                    ],
+                  ),
                 ],
               ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             Visibility(
               visible: isListViewVisible,

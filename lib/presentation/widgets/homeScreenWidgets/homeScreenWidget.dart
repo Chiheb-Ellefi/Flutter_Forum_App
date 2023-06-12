@@ -34,40 +34,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.grey.shade100,
-        /*  appBar: AppBar(
-            /* title: const Text(
-              'Topics',
-              style: TextStyle(color: Colors.black87, fontSize: 30),
-            ),
-            centerTitle: true, */
-            backgroundColor: Colors.white,
-            elevation: 0,
-            /* leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(FontAwesomeIcons.arrowLeft),
-                iconSize: 30,
-                color: Colors.black87,
-              ),
-            ), */
-            toolbarHeight: 70,
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                ),
-                iconSize: 40,
-                color: Colors.black87,
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(FontAwesomeIcons.bell),
-                iconSize: 30,
-                color: Colors.black87,
-              ),
-            ]), */
+
         body: screens[index],
 
         //Floating Action Button

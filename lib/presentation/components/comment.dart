@@ -54,6 +54,8 @@ class _CommentState extends State<Comment> {
     }
   }
 
+  final reply = TextEditingController();
+
   List<dynamic>? likes;
   bool isLiked = false;
   final userUid = FirebaseAuth.instance.currentUser!.uid;
@@ -62,8 +64,17 @@ class _CommentState extends State<Comment> {
   Widget build(BuildContext context) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(widget.date);
     isLiked = widget.likes!.contains(userUid);
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      padding: const EdgeInsets.only(bottom: 15),
+      margin: const EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.shade300,
+            width: 1.0, // Set the desired border width
+          ),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,23 +189,40 @@ class _CommentState extends State<Comment> {
             ],
           ),
           if (widget.isCommentListVisible)
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.replies,
-                itemBuilder: (context, index) => Comment(
-                  uid: widget.uid,
-                  text: "Reply $index", // Replace with actual comment text
-                  author: 'Author $index', // Replace with actual author name
-                  date: widget.date,
-                  likes: ['hello'], // Replace with actual likes count
-                  replies: 10, // Replace with actual replies count
-                  isCommentListVisible:
-                      false, // Replace with actual visibility status
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              FontAwesomeIcons.reply,
+                              color: Colors.black87,
+                            )),
+                        hintText: 'Reply to this comment '),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 15,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 2,
+                  itemBuilder: (context, index) => Comment(
+                    uid: widget.uid,
+                    text: "Reply $index", // Replace with actual comment text
+                    author: 'Author $index', // Replace with actual author name
+                    date: widget.date,
+                    likes: ['hello'], // Replace with actual likes count
+                    replies: 10, // Replace with actual replies count
+                    isCommentListVisible:
+                        false, // Replace with actual visibility status
+                  ),
+                ),
+              ],
             ),
         ],
       ),

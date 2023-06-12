@@ -36,7 +36,7 @@ class _CommentAlertState extends State<CommentAlert> {
           await topicRef.where('uid', isEqualTo: widget.uid).get();
       for (var element in querySnapshot.docs) {
         element.reference
-            .collection(widget.uid + 'comments')
+            .collection('${widget.uid}comments')
             .add(myComment.toMap());
       }
     } catch (e) {

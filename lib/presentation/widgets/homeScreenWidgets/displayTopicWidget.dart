@@ -63,7 +63,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
 
     for (final element in value.docs) {
       final QuerySnapshot snapshot =
-          await element.reference.collection(widget.uid + 'comments').get();
+          await element.reference.collection('${widget.uid}comments').get();
       len = snapshot.size.toString();
 
       if (snapshot.docs.isNotEmpty) {

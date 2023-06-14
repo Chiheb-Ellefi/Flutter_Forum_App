@@ -164,11 +164,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 foregroundImage: NetworkImage(
                   image ?? avatarDefault,
                 ),
-                child: const Icon(
-                  FontAwesomeIcons.camera,
-                  size: 50,
-                  color: Colors.black87,
-                ),
+                backgroundImage: const NetworkImage(avatarDefault),
               ),
               const SizedBox(
                 height: 20,
@@ -248,6 +244,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   fontSize: 25,
                   fontWeight: FontWeight.w400,
                 ),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               FirestoreListViewWidget<TopicModel>(
                 physics: const NeverScrollableScrollPhysics(),

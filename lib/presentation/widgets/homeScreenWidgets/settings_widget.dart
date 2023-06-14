@@ -100,11 +100,7 @@ class _SettingsState extends State<Settings> {
                 foregroundImage: NetworkImage(
                   image ?? avatarDefault,
                 ),
-                child: const Icon(
-                  FontAwesomeIcons.camera,
-                  size: 50,
-                  color: Colors.black87,
-                ),
+                backgroundImage: const NetworkImage(avatarDefault),
               ),
               const SizedBox(
                 height: 20,

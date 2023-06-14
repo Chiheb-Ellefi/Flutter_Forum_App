@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
+import 'package:my_project/main.dart';
 
 // ignore: must_be_immutable
 class Comment extends StatefulWidget {
@@ -68,6 +69,12 @@ class _CommentState extends State<Comment> {
   }
 
   updateReplies() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ));
     try {
       final queryTopic = FirebaseFirestore.instance
           .collection(topicsCollection)
@@ -98,6 +105,7 @@ class _CommentState extends State<Comment> {
     } catch (e) {
       print(e);
     }
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
   List<dynamic>? likes;

@@ -194,7 +194,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                         width: 100,
                       ),
                       InkWell(
-                        onTap: () async {
+                        onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(

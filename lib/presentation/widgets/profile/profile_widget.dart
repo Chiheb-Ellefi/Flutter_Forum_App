@@ -56,6 +56,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       }
     });
     isFollowing = followers!.contains(uid);
+    followText = isFollowing ? 'UnFollow' : 'Follow';
     setState(() {}); // Update the widget's state after retrieving the data
   }
 
@@ -115,12 +116,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     super.initState();
     getProfilePic();
     isMyProfile = uid == widget.uid;
-    followText = isFollowing ? 'UnFollow' : 'Follow';
   }
 
   @override
   Widget build(BuildContext context) {
+    followText = isFollowing ? 'UnFollow' : 'Follow';
     initializeQuery();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -235,6 +237,16 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       ],
                     )
                   ],
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const Text(
+                'Most recent topics',
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               FirestoreListViewWidget<TopicModel>(

@@ -112,6 +112,8 @@ class _TopicsWidgetState extends State<TopicsWidget> {
           ),
           Expanded(
             child: FirestoreListViewWidget<TopicModel>(
+              shrink: false,
+              physics: const AlwaysScrollableScrollPhysics(),
               query: queryTopic,
               itemBuilder: (context, snapshot) {
                 final topic = snapshot.data();

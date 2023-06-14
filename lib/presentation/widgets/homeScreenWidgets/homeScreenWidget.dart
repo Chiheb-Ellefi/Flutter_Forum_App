@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/presentation/pages/profile/profile.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/settings_widget.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/topicsWidget.dart';
 
@@ -13,13 +14,8 @@ class HomeScreenWidget extends StatefulWidget {
 class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   int index = 0;
   final screens = [
-    TopicsWidget(),
-    const Center(
-      child: Text(
-        'Profile',
-        style: TextStyle(fontSize: 70),
-      ),
-    ),
+    const TopicsWidget(),
+    MyProfile(),
     const Center(
       child: Text(
         'Followers',

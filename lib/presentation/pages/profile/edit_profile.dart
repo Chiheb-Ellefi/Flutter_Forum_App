@@ -12,7 +12,6 @@ import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
 import 'package:my_project/main.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
-import 'package:my_project/presentation/components/loginButton.dart';
 import 'package:path/path.dart' as path;
 import '../../../constants/firebase_consts.dart';
 
@@ -232,7 +231,7 @@ class _EditProileState extends State<EditProile> {
                             validator: (value) {
                               if (value!.length > 250) {
                                 return 'Email is too long';
-                              } else if (value!.length > 0) {
+                              } else if (value.length > 0) {
                                 if (!(RegExp(
                                         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                     .hasMatch(value))) {

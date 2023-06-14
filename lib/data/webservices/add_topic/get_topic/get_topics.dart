@@ -10,8 +10,12 @@ class FirestoreListViewWidget<T> extends StatelessWidget {
   const FirestoreListViewWidget({
     required this.query,
     required this.itemBuilder,
+    required this.shrink,
+    required this.physics,
     Key? key,
   }) : super(key: key);
+  final ScrollPhysics? physics;
+  final bool shrink;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,8 @@ class FirestoreListViewWidget<T> extends StatelessWidget {
         }
 
         return ListView.builder(
+          physics: physics,
+          shrinkWrap: shrink,
           itemCount: documents.length,
           itemBuilder: (context, index) {
             final document = documents[index];

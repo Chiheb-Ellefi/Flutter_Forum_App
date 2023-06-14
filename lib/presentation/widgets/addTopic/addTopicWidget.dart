@@ -28,6 +28,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
   final _title = TextEditingController();
   final _description = TextEditingController();
   final GlobalKey<TagsState> _tagKeyState = GlobalKey();
+  List? topics = [];
   String str = '';
   List<File> images = [];
   DocumentReference<Map<String, dynamic>> get _topic =>
@@ -84,11 +85,12 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
           )
           .get()
           .then((value) {
-        value.docs.forEach((element) {
+        for (var element in value.docs) {
           Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
           myData = UserModel.fromMap(data!);
           userName = myData.username!;
-        });
+          topics = myData.topics;
+        }
       });
       String myPath;
       String imageUrl;
@@ -116,7 +118,19 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
         files: myImages,
         authorUid: uid,
       );
+      topics!.add(_topic.id);
       await _topic.set(topicModel.toMap());
+      await userRef
+          .where(
+            "uid",
+            isEqualTo: uid,
+          )
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          element.reference.update({'topics': topics});
+        }
+      });
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {

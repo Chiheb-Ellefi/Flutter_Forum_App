@@ -5,9 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
+import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/presentation/components/comment.dart';
 import 'package:my_project/presentation/components/rate_dialog.dart';
 import 'package:my_project/presentation/components/tag.dart';
+import 'package:my_project/presentation/widgets/profile/profile_widget.dart';
 import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
@@ -45,7 +47,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   bool isLiked = false;
   List<dynamic>? myComments;
   String len = '';
-
+  String? authUid;
   @override
   void initState() {
     super.initState();
@@ -81,8 +83,22 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
     });
   }
 
+  getAuthUid() async {
+    final queryTopic = FirebaseFirestore.instance
+        .collection(topicsCollection)
+        .where('uid', isEqualTo: widget.uid)
+        .get();
+    final value = await queryTopic;
+    for (final element in value.docs) {
+      Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
+      TopicModel myData = TopicModel.fromMap(data!);
+      authUid = myData.authorUid!;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getAuthUid();
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -177,33 +193,42 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                       const SizedBox(
                         width: 100,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              Icon(Icons.person_outlined, size: 30),
-                              Text(
-                                'Author',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w400,
+                      InkWell(
+                        onTap: () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileWidget(uid: authUid)));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.person_outlined, size: 30),
+                                Text(
+                                  'Author',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            widget.userName,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey,
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              widget.userName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

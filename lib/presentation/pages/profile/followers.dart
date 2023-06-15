@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/presentation/widgets/profile/followers.dart';
+import 'package:my_project/presentation/widgets/profile/following.dart';
 
 class Followers extends StatelessWidget {
   const Followers({super.key});
@@ -56,7 +57,7 @@ class Followers extends StatelessWidget {
             ),
           ),
           body: const TabBarView(
-            children: [FollowersWidget(), FollowersWidget()],
+            children: [FollowersWidget(), FollowingWidget()],
           ),
         ),
       ),

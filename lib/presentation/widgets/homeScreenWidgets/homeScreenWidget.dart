@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/presentation/pages/profile/followers.dart';
 import 'package:my_project/presentation/pages/profile/profile.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/settings_widget.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/topicsWidget.dart';
@@ -16,12 +17,7 @@ class _HomeScreenWidgetState extends State<HomeScreenWidget> {
   final screens = [
     const TopicsWidget(),
     MyProfile(),
-    const Center(
-      child: Text(
-        'Followers',
-        style: TextStyle(fontSize: 70),
-      ),
-    ),
+    const Followers(),
     Settings(),
   ];
   @override

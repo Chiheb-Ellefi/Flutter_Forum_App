@@ -57,7 +57,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     });
     isFollowing = followers!.contains(uid);
     followText = isFollowing ? 'UnFollow' : 'Follow';
-    setState(() {}); // Update the widget's state after retrieving the data
+    if (mounted) {
+      setState(() {
+        // Update the widget's state after retrieving the data
+      });
+    }
   }
 
   follow() async {

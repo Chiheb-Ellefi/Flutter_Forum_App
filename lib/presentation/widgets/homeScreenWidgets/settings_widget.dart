@@ -46,7 +46,11 @@ class _SettingsState extends State<Settings> {
         email = myData.email;
       }
     });
-    setState(() {}); // Update the widget's state after retrieving the data
+    if (mounted) {
+      setState(() {
+        // Update the widget's state after retrieving the data
+      });
+    }
   }
 
   @override

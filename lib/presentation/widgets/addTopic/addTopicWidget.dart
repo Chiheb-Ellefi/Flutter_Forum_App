@@ -8,29 +8,48 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/tags_model/tags_model.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/main.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
+import 'package:my_project/presentation/components/tag_dropdown.dart';
 import 'package:path/path.dart' as path;
 
 class CreateTopicWidget extends StatefulWidget {
-  const CreateTopicWidget({super.key});
+  const CreateTopicWidget({Key? key}) : super(key: key);
 
   @override
   State<CreateTopicWidget> createState() => _CreateTopicWidgetState();
 }
 
 class _CreateTopicWidgetState extends State<CreateTopicWidget> {
+  /* @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addTags();
+  }
+
+  addTags() async {
+    TagsModel tagsModel = TagsModel(uid: uid, tags: ['hello', 'hi', 'chiheb']);
+    await FirebaseFirestore.instance
+        .collection(tagsCollection)
+        .doc(uid)
+        .set(tagsModel.toMap());
+  } */
+
   List tags = [];
   List<String> myTags = [];
+  List<dynamic>? tagsList = [];
   final _title = TextEditingController();
   final _description = TextEditingController();
   final GlobalKey<TagsState> _tagKeyState = GlobalKey();
   List? topics = [];
   String str = '';
   List<File> images = [];
+  final uid = FirebaseAuth.instance.currentUser!.uid;
   DocumentReference<Map<String, dynamic>> get _topic =>
       FirebaseFirestore.instance.collection(topicsCollection).doc();
   Future pickImage() async {
@@ -63,6 +82,22 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
     });
   }
 
+  Future updateTags() async {
+    TagsModel myData = TagsModel();
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection(tagsCollection)
+        .doc(uid)
+        .get();
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+    myData = TagsModel.fromMap(data!);
+    tagsList = myData.tags;
+    tagsList!.addAll(myTags);
+    await FirebaseFirestore.instance
+        .collection(tagsCollection)
+        .doc(uid)
+        .update({'tags': tagsList});
+  }
+
   Future publish() async {
     showDialog(
         context: context,
@@ -71,27 +106,17 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
               child: CircularProgressIndicator(),
             ));
     try {
-      String uid = FirebaseAuth.instance.currentUser!.uid;
       UserModel myData = UserModel();
       CollectionReference userRef =
           FirebaseFirestore.instance.collection(usersCollection);
 
       String userName = '';
       List<String>? myImages = [];
-      await userRef
-          .where(
-            "uid",
-            isEqualTo: uid,
-          )
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
-          myData = UserModel.fromMap(data!);
-          userName = myData.username!;
-          topics = myData.topics;
-        }
-      });
+      DocumentSnapshot snapshot = await userRef.doc(uid).get();
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      myData = UserModel.fromMap(data!);
+      userName = myData.username!;
+      topics = myData.topics;
       String myPath;
       String imageUrl;
       //get images url and upload them to firestore storage
@@ -120,17 +145,8 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
       );
       topics!.add(_topic.id);
       await _topic.set(topicModel.toMap());
-      await userRef
-          .where(
-            "uid",
-            isEqualTo: uid,
-          )
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          element.reference.update({'topics': topics});
-        }
-      });
+      await userRef.doc(uid).update({'topics': topics});
+      updateTags();
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
@@ -139,31 +155,127 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
+  TextEditingController controller = TextEditingController();
+  String val = 'Dog';
   @override
   Widget build(BuildContext context) {
     AlertDialog addTag = AlertDialog(
-      content: Tags(
-        textField: TagsTextField(
-          textStyle: const TextStyle(fontSize: 15),
-          constraintSuggestion: true,
-          onChanged: (value) {
-            str = value;
-          },
+      content: Container(
+        padding: const EdgeInsets.all(10),
+        height: 200,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TagDropdown(
+                      onChanged: (newValue) {
+                        setState(() {
+                          val = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundColor: myBlue2,
+                    child: Center(
+                      child: IconButton(
+                        iconSize: 15,
+                        color: Colors.white,
+                        onPressed: () {
+                          // Call the method to add an item to the data source
+                          addItemToDataSource(
+                              val.substring(0, 1).toUpperCase() +
+                                  val.substring(1).toLowerCase());
+                        },
+                        icon: const Icon(
+                          FontAwesomeIcons.plus,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              const Row(children: <Widget>[
+                Expanded(
+                    child: Divider(
+                  thickness: .5,
+                  color: Colors.black87,
+                )),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("OR"),
+                ),
+                Expanded(
+                    child: Divider(
+                  thickness: .5,
+                  color: Colors.black87,
+                )),
+              ]),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Tag',
+                        hintText: 'Enter a tag',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundColor: myBlue2,
+                    child: Center(
+                      child: IconButton(
+                        iconSize: 15,
+                        color: Colors.white,
+                        onPressed: () {
+                          str = controller.text;
+                          // Call the method to add an item to the data source
+                          addItemToDataSource(
+                              str.substring(0, 1).toUpperCase() +
+                                  str.substring(1).toLowerCase());
+
+                          // Close the dialog
+                          controller.clear();
+                        },
+                        icon: const Icon(
+                          FontAwesomeIcons.plus,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
-          onPressed: () {
-            // Call the method to add an item to the data source
-            addItemToDataSource(str.substring(0, 1).toUpperCase() +
-                str.substring(1).toLowerCase());
-            Navigator.pop(context);
-          },
-          child: const Text('Add tag'),
+        Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Done'),
+          ),
         ),
       ],
     );
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

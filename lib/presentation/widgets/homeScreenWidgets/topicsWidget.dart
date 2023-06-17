@@ -127,6 +127,7 @@ class _TopicsWidgetState extends State<TopicsWidget> {
                   text: topic.description!,
                   tags: topic.tags!,
                   raters: topic.raters!,
+                  notifEnabled: topic.notifEnabled!,
                 );
               },
             ),

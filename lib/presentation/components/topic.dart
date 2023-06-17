@@ -16,7 +16,8 @@ class Topic extends StatefulWidget {
       required this.text,
       required this.tags,
       required this.uid,
-      required this.raters});
+      required this.raters,
+      required this.notifEnabled});
   String uid;
   String title;
   String userName;
@@ -26,6 +27,7 @@ class Topic extends StatefulWidget {
   List<dynamic> tags;
   List<dynamic> image;
   int raters;
+  bool? notifEnabled;
 
   @override
   State<Topic> createState() => _TopicState();
@@ -44,6 +46,7 @@ class _TopicState extends State<Topic> {
               text: widget.text,
               tags: widget.tags,
               raters: widget.raters,
+              notifEnabled: widget.notifEnabled,
             )));
   }
 

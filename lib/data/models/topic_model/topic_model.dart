@@ -16,6 +16,7 @@ class TopicModel {
   List<dynamic>? tags;
   List<dynamic>? files;
   String? authorUid;
+  bool? notifEnabled;
   TopicModel({
     this.uid,
     this.title,
@@ -27,6 +28,7 @@ class TopicModel {
     this.tags,
     this.files,
     this.authorUid,
+    this.notifEnabled,
   });
 
   TopicModel copyWith({
@@ -40,6 +42,7 @@ class TopicModel {
     List<dynamic>? tags,
     List<dynamic>? files,
     String? authorUid,
+    bool? notifEnabled,
   }) {
     return TopicModel(
       uid: uid ?? this.uid,
@@ -52,6 +55,7 @@ class TopicModel {
       tags: tags ?? this.tags,
       files: files ?? this.files,
       authorUid: authorUid ?? this.authorUid,
+      notifEnabled: notifEnabled ?? this.notifEnabled,
     );
   }
 
@@ -67,6 +71,7 @@ class TopicModel {
       'tags': tags,
       'files': files,
       'authorUid': authorUid,
+      'notifEnabled': notifEnabled,
     };
   }
 
@@ -89,6 +94,8 @@ class TopicModel {
           ? List<dynamic>.from((map['files'] as List<dynamic>))
           : null,
       authorUid: map['authorUid'] != null ? map['authorUid'] as String : null,
+      notifEnabled:
+          map['notifEnabled'] != null ? map['notifEnabled'] as bool : null,
     );
   }
 
@@ -99,7 +106,7 @@ class TopicModel {
 
   @override
   String toString() {
-    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files, authorUid: $authorUid)';
+    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files, authorUid: $authorUid, notifEnabled: $notifEnabled)';
   }
 
   @override
@@ -115,7 +122,8 @@ class TopicModel {
         other.raters == raters &&
         listEquals(other.tags, tags) &&
         listEquals(other.files, files) &&
-        other.authorUid == authorUid;
+        other.authorUid == authorUid &&
+        other.notifEnabled == notifEnabled;
   }
 
   @override
@@ -129,6 +137,7 @@ class TopicModel {
         raters.hashCode ^
         tags.hashCode ^
         files.hashCode ^
-        authorUid.hashCode;
+        authorUid.hashCode ^
+        notifEnabled.hashCode;
   }
 }

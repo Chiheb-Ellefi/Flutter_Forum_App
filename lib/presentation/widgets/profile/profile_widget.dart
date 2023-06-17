@@ -250,6 +250,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     text: topic.description!,
                     tags: topic.tags!,
                     raters: topic.raters!,
+                    notifEnabled: topic.notifEnabled,
                   );
                 },
               ),

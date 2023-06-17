@@ -145,6 +145,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
         tags: myTags,
         files: myImages,
         authorUid: uid,
+        notifEnabled: true,
       );
       topics!.add(topicUid);
       await _topic.set(topicModel.toMap());

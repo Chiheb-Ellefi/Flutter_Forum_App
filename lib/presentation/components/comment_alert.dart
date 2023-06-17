@@ -29,7 +29,7 @@ class _CommentAlertState extends State<CommentAlert> {
   addComment() async {
     try {
       CommentModel myComment = CommentModel(
-        author: widget.author!,
+        author: widget.author,
         text: _controller.text.trim(),
         likes: [],
         date: DateTime.now(),
@@ -76,7 +76,10 @@ class _CommentAlertState extends State<CommentAlert> {
     } else {
       return AlertDialog(
         title: const Text('Comment'),
-        content: const Text('The author has disabled the comments'),
+        content: const Text(
+          'The author has disabled the comments',
+          style: TextStyle(fontSize: 20),
+        ),
         actions: [
           Center(
             child: ElevatedButton(

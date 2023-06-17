@@ -15,14 +15,13 @@ class Comment extends StatefulWidget {
       required this.date,
       required this.likes,
       required this.replies,
-      required this.isCommentListVisible,
       required this.uid});
   String author;
   String text;
   int date;
   List<dynamic>? likes;
   List<dynamic> replies;
-  bool isCommentListVisible;
+
   String uid;
 
   @override
@@ -37,20 +36,19 @@ class _CommentState extends State<Comment> {
         .get();
 
     final value = await queryTopic;
-    final commentsList = <CommentModel>[];
 
     for (final element in value.docs) {
       final QuerySnapshot snapshot = await element.reference
-          .collection(widget.uid + 'comments')
+          .collection('${widget.uid}comments')
           .where('date', isEqualTo: widget.date)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
-        final comments = snapshot.docs.forEach((element) {
+        for (var element in snapshot.docs) {
           element.reference.update({
             'likes': likes,
           });
-        });
+        }
       }
     }
   }
@@ -97,7 +95,6 @@ class _CommentState extends State<Comment> {
               'replies': replies,
             }).then((_) {
               reply.clear(); // Clear the text editing controller
-              setState(() {}); // Rebuild the widget
             });
           });
         }
@@ -108,28 +105,31 @@ class _CommentState extends State<Comment> {
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
+  bool isCommentListVisible = false;
   List<dynamic>? likes;
-  bool isLiked = false;
+  bool? isLiked;
   final userUid = FirebaseAuth.instance.currentUser!.uid;
   Icon? myIcon;
   List<dynamic>? myComments;
   List<dynamic>? myReplies;
-  String len = '';
+  @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+    likes = widget.likes;
+    isLiked = widget.likes!.contains(userUid);
+  }
 
   @override
   Widget build(BuildContext context) {
     DateTime date = DateTime.fromMillisecondsSinceEpoch(widget.date);
-    isLiked = widget.likes!.contains(userUid);
     return Container(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.all(15),
       margin: const EdgeInsets.only(bottom: 15),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1.0, // Set the desired border width
-          ),
-        ),
+        color:
+            isCommentListVisible ? Colors.grey.shade400 : Colors.grey.shade300,
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,6 +147,7 @@ class _CommentState extends State<Comment> {
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w400,
+                              color: Colors.black87,
                             )),
                       ],
                     ),
@@ -193,28 +194,26 @@ class _CommentState extends State<Comment> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      setState(() {
-                        if (isLiked) {
-                          likes = widget.likes;
-                          widget.likes!.remove(userUid);
-                          likes = widget.likes;
-                          isLiked = !isLiked;
-                        } else {
-                          likes = widget.likes;
-                          widget.likes!.add(userUid);
-                          likes = widget.likes;
-                          isLiked = !isLiked;
-                        }
-                      });
+                      if (isLiked!) {
+                        likes!.remove(userUid);
+                        setState(() {
+                          isLiked = !isLiked!;
+                        });
+                      } else {
+                        likes!.add(userUid);
+                        setState(() {
+                          isLiked = !isLiked!;
+                        });
+                      }
                       updateLike();
                     },
                     icon: Icon(
-                      isLiked ? Icons.favorite_rounded : Icons.favorite_border,
-                      color: isLiked ? Colors.red : Colors.black,
+                      isLiked! ? Icons.favorite_rounded : Icons.favorite_border,
+                      color: isLiked! ? Colors.red : Colors.black,
                       size: 28,
                     ),
                   ),
-                  Text(widget.likes!.length.toString(),
+                  Text(likes!.length.toString(),
                       style: const TextStyle(fontSize: 17)),
                 ],
               ),
@@ -226,12 +225,11 @@ class _CommentState extends State<Comment> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        widget.isCommentListVisible =
-                            !widget.isCommentListVisible;
+                        isCommentListVisible = !isCommentListVisible;
                       });
                     },
                     icon: Icon(
-                        widget.isCommentListVisible
+                        isCommentListVisible
                             ? FontAwesomeIcons.solidMessage
                             : FontAwesomeIcons.message,
                         color: Colors.black87),
@@ -244,7 +242,7 @@ class _CommentState extends State<Comment> {
               ),
             ],
           ),
-          if (widget.isCommentListVisible)
+          if (isCommentListVisible)
             Column(
               children: [
                 Padding(
@@ -254,8 +252,11 @@ class _CommentState extends State<Comment> {
                     decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
-                            myReply = getReply();
-                            updateReplies();
+                            if (reply.text.trim() != '') {
+                              myReply = getReply();
+                              reply.clear();
+                              updateReplies();
+                            }
                           },
                           icon: const Icon(
                             FontAwesomeIcons.reply,
@@ -281,7 +282,6 @@ class _CommentState extends State<Comment> {
                       date: comment['date'],
                       likes: comment['likes'],
                       replies: comment['replies'],
-                      isCommentListVisible: false,
                     );
                   },
                 ),

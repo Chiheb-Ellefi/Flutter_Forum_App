@@ -20,18 +20,19 @@ import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
 class DisplayTopicWidget extends StatefulWidget {
-  DisplayTopicWidget({
-    Key? key,
-    required this.title,
-    required this.userName,
-    required this.date,
-    required this.rating,
-    required this.image,
-    required this.text,
-    required this.tags,
-    required this.uid,
-    required this.raters,
-  }) : super(key: key);
+  DisplayTopicWidget(
+      {Key? key,
+      required this.title,
+      required this.userName,
+      required this.date,
+      required this.rating,
+      required this.image,
+      required this.text,
+      required this.tags,
+      required this.uid,
+      required this.raters,
+      required this.notifEnabled})
+      : super(key: key);
 
   String uid;
   String title;
@@ -42,6 +43,7 @@ class DisplayTopicWidget extends StatefulWidget {
   List<dynamic> tags;
   List<dynamic> image;
   int raters;
+  bool? notifEnabled;
 
   @override
   State<DisplayTopicWidget> createState() => _DisplayTopicWidgetState();
@@ -54,11 +56,12 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   List<dynamic>? myComments;
   String len = '';
   String? authUid;
-  bool commentsEnabled = true;
+  bool? commentsEnabled;
   @override
   void initState() {
     super.initState();
-    getComments();
+
+    commentsEnabled = widget.notifEnabled;
   }
 
   Future<void> getComments() async {
@@ -85,9 +88,11 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
       }
     }
 
-    setState(() {
-      myComments = commentsList.map((e) => e.toMap()).toList();
-    });
+    if (mounted) {
+      setState(() {
+        myComments = commentsList.map((e) => e.toMap()).toList();
+      });
+    }
   }
 
   getAuthUid() async {
@@ -100,6 +105,16 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
       Map<String, dynamic>? data = element.data();
       TopicModel myData = TopicModel.fromMap(data);
       authUid = myData.authorUid!;
+    }
+  }
+
+  updateCommentEnabled() async {
+    final value = await FirebaseFirestore.instance
+        .collection(topicsCollection)
+        .where('uid', isEqualTo: widget.uid)
+        .get();
+    for (final element in value.docs) {
+      element.reference.update({'notifEnabled': commentsEnabled});
     }
   }
 
@@ -147,19 +162,21 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   @override
   Widget build(BuildContext context) {
     getAuthUid();
+    getComments();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              barrierDismissible: commentsEnabled,
+        onPressed: () async {
+          await showDialog(
+              barrierDismissible: widget.notifEnabled!,
               context: context,
               builder: (context) {
                 return CommentAlert(
                   author: widget.userName,
                   uid: widget.uid,
-                  enabled: commentsEnabled,
+                  enabled: commentsEnabled!,
                 );
               });
+          setState(() {});
         },
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
@@ -384,12 +401,13 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                         ),
                         if (authUid == uid)
                           Switch(
-                            value: commentsEnabled,
+                            value: commentsEnabled!,
                             activeColor: myBlue2,
-                            onChanged: (bool value) {
+                            onChanged: (bool value) async {
                               setState(() {
                                 commentsEnabled = value;
                               });
+                              await updateCommentEnabled();
                             },
                           ),
                       ],
@@ -499,7 +517,6 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                       date: comment['date'],
                       likes: comment['likes'],
                       replies: comment['replies'],
-                      isCommentListVisible: false,
                     );
                   },
                 ),

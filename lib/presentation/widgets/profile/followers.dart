@@ -16,7 +16,6 @@ class FollowersWidget extends StatefulWidget {
 
 class _FollowersWidgetState extends State<FollowersWidget> {
   List? followers = [], following = [];
-  bool? isFollowing;
   UserModel myData = UserModel();
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
@@ -53,7 +52,6 @@ class _FollowersWidgetState extends State<FollowersWidget> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: followers!.length,
         itemBuilder: (context, index) {
-          isFollowing = following!.contains(followers![index]);
           return FutureBuilder<DocumentSnapshot>(
             future: userRef
                 .doc(followers![index])
@@ -89,7 +87,6 @@ class _FollowersWidgetState extends State<FollowersWidget> {
                       following: following,
                       image: profilePicture,
                       text: username,
-                      isFollowing: isFollowing!,
                     ),
                   );
                 }

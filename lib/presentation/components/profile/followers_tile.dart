@@ -10,7 +10,6 @@ class MyListTile extends StatefulWidget {
   MyListTile(
       {super.key,
       required this.text,
-      required this.isFollowing,
       required this.image,
       required this.followerUid,
       required this.uid,
@@ -18,7 +17,6 @@ class MyListTile extends StatefulWidget {
       required this.following,
       required this.followerFollowers});
   final String text;
-  bool isFollowing;
   final String image;
   final String uid;
   final String followerUid;
@@ -31,6 +29,7 @@ class MyListTile extends StatefulWidget {
 class _MyListTileState extends State<MyListTile> {
   List? myFollowers = [];
   List? myFollowing = [];
+  bool isFollowing = false;
   UserModel myData = UserModel();
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
@@ -40,10 +39,11 @@ class _MyListTileState extends State<MyListTile> {
     super.initState();
     myFollowers = List<String>.from(widget.followerFollowers ?? []);
     myFollowing = List<String>.from(widget.following ?? []);
+    isFollowing = myFollowing!.contains(widget.followerUid);
   }
 
   follow() async {
-    if (widget.isFollowing) {
+    if (isFollowing) {
       myFollowers!.remove(widget.uid);
       myFollowing!.remove(widget.followerUid);
     } else {
@@ -61,9 +61,8 @@ class _MyListTileState extends State<MyListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final IconData myIcon = widget.isFollowing
-        ? FontAwesomeIcons.userMinus
-        : FontAwesomeIcons.userPlus;
+    final IconData myIcon =
+        isFollowing ? FontAwesomeIcons.userMinus : FontAwesomeIcons.userPlus;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,7 +89,7 @@ class _MyListTileState extends State<MyListTile> {
           onPressed: () {
             follow();
             setState(() {
-              widget.isFollowing = !widget.isFollowing;
+              isFollowing = !isFollowing;
             });
           },
           icon: Icon(myIcon),

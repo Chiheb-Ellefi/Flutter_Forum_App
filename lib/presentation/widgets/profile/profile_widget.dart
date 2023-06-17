@@ -25,8 +25,10 @@ class ProfileWidget extends StatefulWidget {
 
 class _ProfileWidgetState extends State<ProfileWidget> {
   String? image, userName;
-  List? followers = [], topics = [], following = [];
-  UserModel myData = UserModel();
+  List? followers = [], topics = [], myFollowing = [];
+
+  CollectionReference myRef =
+      FirebaseFirestore.instance.collection(usersCollection);
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
   CollectionReference topicsRef =
@@ -37,26 +39,28 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   bool isFollowing = false;
   String followText = '';
 
-  Future<void> getProfilePic() async {
-    await userRef
-        .where(
-          "uid",
-          isEqualTo: widget.uid,
-        )
-        .get()
-        .then((value) {
-      for (var element in value.docs) {
-        Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
-        myData = UserModel.fromMap(data!);
-        image = myData.profilePicture;
-        userName = myData.username;
-        followers = myData.followers ?? [];
-        following = myData.following;
-        topics = myData.topics ?? [];
-      }
-    });
+  Future<void> getProfile() async {
+    DocumentSnapshot snapshot = await userRef.doc(widget.uid).get();
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+    UserModel userData = UserModel.fromMap(data!);
+    image = userData.profilePicture;
+    userName = userData.username;
+    followers = userData.followers ?? [];
+    topics = userData.topics ?? [];
     isFollowing = followers!.contains(uid);
     followText = isFollowing ? 'UnFollow' : 'Follow';
+    if (mounted) {
+      setState(() {
+        // Update the widget's state after retrieving the data
+      });
+    }
+  }
+
+  Future<void> getMyProfile() async {
+    DocumentSnapshot snapshot = await myRef.doc(uid).get();
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+    UserModel myData = UserModel.fromMap(data!);
+    myFollowing = myData.following ?? [];
     if (mounted) {
       setState(() {
         // Update the widget's state after retrieving the data
@@ -67,39 +71,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   follow() async {
     if (isFollowing) {
       followText = 'Follow';
-
       followers!.remove(uid);
-      following!.remove(widget.uid);
+      myFollowing!.remove(widget.uid);
     } else {
       followText = 'UnFollow';
-
       followers!.add(uid);
-      following!.add(widget.uid);
+      myFollowing!.add(widget.uid);
     }
 
     try {
-      await userRef
-          .where(
-            "uid",
-            isEqualTo: widget.uid,
-          )
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          element.reference.update({'followers': followers});
-        }
-      });
-      await userRef
-          .where(
-            "uid",
-            isEqualTo: uid,
-          )
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          element.reference.update({'following': following});
-        }
-      });
+      await myRef.doc(uid).update({'following': myFollowing});
+      await userRef.doc(widget.uid).update({'followers': followers});
     } on FirebaseException catch (e) {
       Utils.showSnackBar(e.message);
     }
@@ -118,7 +100,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
-    getProfilePic();
+    getMyProfile();
+    getProfile();
     isMyProfile = uid == widget.uid;
   }
 
@@ -126,7 +109,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Widget build(BuildContext context) {
     followText = isFollowing ? 'UnFollow' : 'Follow';
     initializeQuery();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

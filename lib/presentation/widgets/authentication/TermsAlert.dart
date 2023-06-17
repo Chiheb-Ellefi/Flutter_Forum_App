@@ -6,6 +6,7 @@ import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/contant_values.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/constants/strings.dart';
+import 'package:my_project/data/models/tags_model/tags_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
 import 'package:my_project/main.dart';
@@ -75,7 +76,20 @@ class _TermsAlertState extends State<TermsAlert> {
           topics: [],
           isAnonymous: false);
       await _users.doc(result.user!.uid).set(userModel.toMap());
-
+      //initialize the tags document for the new user
+      TagsModel tagsModel = TagsModel(uid: result.user!.uid, tags: [
+        'Sports',
+        'Tourism',
+        'Gaming',
+        'Web',
+        'Mobile',
+        'Event',
+        'TVs'
+      ]);
+      await FirebaseFirestore.instance
+          .collection(tagsCollection)
+          .doc(result.user!.uid)
+          .set(tagsModel.toMap());
       navigatorKey.currentState!.popUntil((route) => route.isFirst);
       return result;
     } on FirebaseAuthException catch (e) {

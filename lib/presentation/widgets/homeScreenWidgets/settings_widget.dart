@@ -8,6 +8,7 @@ import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/presentation/components/change_password/old_password.dart';
 import 'package:my_project/presentation/pages/profile/edit_profile.dart';
+import 'package:my_project/presentation/widgets/homeScreenWidgets/manage_tags.dart';
 
 class Settings extends StatefulWidget {
   Settings({Key? key}) : super(key: key);
@@ -182,7 +183,12 @@ class _SettingsState extends State<Settings> {
                       style: TextStyle(fontSize: 20),
                     ),
                     trailing: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ManageTags()));
+                      },
                       icon: const Icon(
                         FontAwesomeIcons.chevronRight,
                       ),

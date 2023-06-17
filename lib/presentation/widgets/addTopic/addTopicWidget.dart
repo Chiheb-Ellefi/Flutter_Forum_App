@@ -92,6 +92,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
     myData = TagsModel.fromMap(data!);
     tagsList = myData.tags;
     tagsList!.addAll(myTags);
+    tagsList = (tagsList!.toSet()).toList();
     await FirebaseFirestore.instance
         .collection(tagsCollection)
         .doc(uid)
@@ -156,9 +157,9 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
   }
 
   TextEditingController controller = TextEditingController();
-  String val = 'Dog';
   @override
   Widget build(BuildContext context) {
+    String val = '';
     AlertDialog addTag = AlertDialog(
       content: Container(
         padding: const EdgeInsets.all(10),
@@ -191,9 +192,10 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
                         color: Colors.white,
                         onPressed: () {
                           // Call the method to add an item to the data source
-                          addItemToDataSource(
-                              val.substring(0, 1).toUpperCase() +
-                                  val.substring(1).toLowerCase());
+
+                          if (val != '') {
+                            addItemToDataSource(val);
+                          }
                         },
                         icon: const Icon(
                           FontAwesomeIcons.plus,
@@ -358,6 +360,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
                     onPressed: () {
                       // Call the method to add an item to the data source
                       showDialog(
+                        barrierDismissible: false,
                         context: context,
                         builder: (BuildContext context) {
                           return addTag;

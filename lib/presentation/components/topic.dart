@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/presentation/components/tag.dart';
-import 'package:my_project/presentation/pages/homeScreen/displayTopic.dart';
+import 'package:my_project/presentation/widgets/homeScreenWidgets/displayTopicWidget.dart';
 
 // ignore: must_be_immutable
 class Topic extends StatefulWidget {
@@ -34,7 +34,7 @@ class Topic extends StatefulWidget {
 class _TopicState extends State<Topic> {
   onPressed() {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => DisplayTopic(
+        builder: (context) => DisplayTopicWidget(
               uid: widget.uid,
               title: widget.title,
               userName: widget.userName,

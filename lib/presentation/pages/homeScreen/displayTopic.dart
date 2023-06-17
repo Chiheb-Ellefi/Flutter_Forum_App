@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/topic_model/topic_model.dart';
 
 import 'package:my_project/presentation/components/comment_alert.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
@@ -29,6 +33,20 @@ class DisplayTopic extends StatelessWidget {
   List<dynamic> tags;
   List<dynamic> image;
   int raters;
+  final myUid = FirebaseAuth.instance.currentUser!.uid;
+  String? authUid;
+  getAuthUid() async {
+    final queryTopic = FirebaseFirestore.instance
+        .collection(topicsCollection)
+        .where('uid', isEqualTo: uid)
+        .get();
+    final value = await queryTopic;
+    for (final element in value.docs) {
+      Map<String, dynamic>? data = element.data() as Map<String, dynamic>?;
+      TopicModel myData = TopicModel.fromMap(data!);
+      authUid = myData.authorUid!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +55,7 @@ class DisplayTopic extends StatelessWidget {
           context, MaterialPageRoute(builder: (context) => const Welcome()));
     }
 
+    getAuthUid();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -48,6 +67,7 @@ class DisplayTopic extends StatelessWidget {
                   return CommentAlert(
                     author: userName,
                     uid: uid,
+                    enabled: true,
                   );
                 });
           },

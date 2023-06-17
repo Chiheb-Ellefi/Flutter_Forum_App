@@ -52,6 +52,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   DocumentReference<Map<String, dynamic>> get _topic =>
       FirebaseFirestore.instance.collection(topicsCollection).doc();
+
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -100,6 +101,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
   }
 
   Future publish() async {
+    final topicUid = _topic.id;
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -133,7 +135,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
       }
 
       TopicModel topicModel = TopicModel(
-        uid: _topic.id,
+        uid: topicUid,
         title: _title.text.trim(),
         description: _description.text.trim(),
         author: userName,
@@ -144,7 +146,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
         files: myImages,
         authorUid: uid,
       );
-      topics!.add(_topic.id);
+      topics!.add(topicUid);
       await _topic.set(topicModel.toMap());
       await userRef.doc(uid).update({'topics': topics});
       updateTags();

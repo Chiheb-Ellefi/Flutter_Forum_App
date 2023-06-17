@@ -8,10 +8,16 @@ import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
 
 class CommentAlert extends StatefulWidget {
-  CommentAlert({super.key, required this.uid, required this.author});
+  CommentAlert({
+    Key? key,
+    required this.uid,
+    required this.author,
+    required this.enabled,
+  });
 
   String uid;
   String author;
+  bool enabled;
 
   @override
   State<CommentAlert> createState() => _CommentAlertState();
@@ -23,7 +29,7 @@ class _CommentAlertState extends State<CommentAlert> {
   addComment() async {
     try {
       CommentModel myComment = CommentModel(
-        author: widget.author,
+        author: widget.author!,
         text: _controller.text.trim(),
         likes: [],
         date: DateTime.now(),
@@ -46,25 +52,43 @@ class _CommentAlertState extends State<CommentAlert> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Comment'),
-      content: TextField(
-        controller: _controller,
-      ),
-      actions: [
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              if (_controller.text.trim().isNotEmpty) {
-                addComment();
+    if (widget.enabled) {
+      return AlertDialog(
+        title: const Text('Comment'),
+        content: TextField(
+          controller: _controller,
+        ),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (_controller.text.trim().isNotEmpty) {
+                  addComment();
+                  Navigator.of(context).pop();
+                }
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
+              child: const Text('Comment'),
+            ),
+          )
+        ],
+      );
+    } else {
+      return AlertDialog(
+        title: const Text('Comment'),
+        content: const Text('The author has disabled the comments'),
+        actions: [
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
                 Navigator.of(context).pop();
-              }
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
-            child: const Text('Comment'),
-          ),
-        )
-      ],
-    );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
+              child: const Text('Go back '),
+            ),
+          )
+        ],
+      );
+    }
   }
 }

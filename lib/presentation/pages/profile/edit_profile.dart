@@ -12,6 +12,7 @@ import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
 import 'package:my_project/main.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 import 'package:path/path.dart' as path;
 import '../../../constants/firebase_consts.dart';
 
@@ -167,12 +168,7 @@ class _EditProileState extends State<EditProile> {
                 iconSize: 30,
                 color: Colors.black87,
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(FontAwesomeIcons.bell),
-                iconSize: 25,
-                color: Colors.black87,
-              ),
+              const MyNotifButton(),
             ],
           ),
           body: SingleChildScrollView(

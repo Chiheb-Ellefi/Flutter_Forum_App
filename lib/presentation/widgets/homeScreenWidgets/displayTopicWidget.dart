@@ -32,7 +32,8 @@ class DisplayTopicWidget extends StatefulWidget {
       required this.tags,
       required this.uid,
       required this.raters,
-      required this.notifEnabled})
+      required this.notifEnabled,
+      required this.authorUid})
       : super(key: key);
 
   String uid;
@@ -45,6 +46,7 @@ class DisplayTopicWidget extends StatefulWidget {
   List<dynamic> image;
   int raters;
   bool? notifEnabled;
+  String authorUid;
 
   @override
   State<DisplayTopicWidget> createState() => _DisplayTopicWidgetState();
@@ -180,6 +182,8 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
               context: context,
               builder: (context) {
                 return CommentAlert(
+                  title: widget.title,
+                  authorUid: widget.authorUid,
                   author: widget.userName,
                   uid: widget.uid,
                   enabled: commentsEnabled!,
@@ -520,6 +524,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                   itemBuilder: (context, index) {
                     final comment = myComments![index];
                     return Comment(
+                      authorUid: widget.authorUid,
                       uid: widget.uid,
                       text: comment['text'],
                       author: comment['author'],

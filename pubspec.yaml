@@ -50,6 +50,7 @@ dependencies:
   path: ^1.8.3
   readmore: ^2.2.0
   smooth_page_indicator: ^1.1.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

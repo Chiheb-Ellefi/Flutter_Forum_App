@@ -5,14 +5,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/webservices/add_topic/get_topic/get_topics.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 
 import 'package:my_project/presentation/components/tagBox.dart';
 import 'package:my_project/presentation/components/topic.dart';
+import 'package:my_project/presentation/widgets/notification/notification.dart';
 
 class TopicsWidget extends StatefulWidget {
   const TopicsWidget({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _TopicsWidgetState createState() => _TopicsWidgetState();
 }
 
@@ -79,12 +82,7 @@ class _TopicsWidgetState extends State<TopicsWidget> {
             iconSize: 30,
             color: Colors.black87,
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(FontAwesomeIcons.bell),
-            iconSize: 25,
-            color: Colors.black87,
-          ),
+          const MyNotifButton(),
         ],
       ),
       body: Column(
@@ -118,7 +116,8 @@ class _TopicsWidgetState extends State<TopicsWidget> {
               itemBuilder: (context, snapshot) {
                 final topic = snapshot.data();
                 return Topic(
-                  uid: topic!.uid!, // Add a unique key to each child widget
+                  authorUid: topic!.authorUid,
+                  uid: topic.uid!, // Add a unique key to each child widget
                   title: topic.title!,
                   userName: topic.author!,
                   date: topic.date!,

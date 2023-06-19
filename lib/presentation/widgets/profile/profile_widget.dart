@@ -5,10 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/contant_values.dart';
 import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/notification_model/notif_model.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/add_topic/get_topic/get_topics.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 import 'package:my_project/presentation/components/topic.dart';
 
 // ignore: must_be_immutable
@@ -68,6 +70,21 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     }
   }
 
+  DocumentReference<Map<String, dynamic>> get _notif =>
+      FirebaseFirestore.instance.collection(notifCollection).doc();
+
+  followNotif() async {
+    final DocumentReference<Map<String, dynamic>> notifRef = _notif;
+    final notifUid = notifRef.id;
+    NotificationModel notif = NotificationModel(
+        uid: notifUid,
+        notified: widget.uid,
+        date: DateTime.now(),
+        notifier: uid,
+        notification: 'just started following you');
+    await notifRef.set(notif.toMap());
+  }
+
   follow() async {
     if (isFollowing) {
       followText = 'Follow';
@@ -77,6 +94,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       followText = 'UnFollow';
       followers!.add(uid);
       myFollowing!.add(widget.uid);
+      await followNotif();
     }
 
     try {
@@ -130,12 +148,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               iconSize: 30,
               color: Colors.black87,
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-              iconSize: 25,
-              color: Colors.black87,
-            ),
+            const MyNotifButton(),
           ],
         ),
         body: SingleChildScrollView(
@@ -241,6 +254,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 itemBuilder: (context, snapshot) {
                   final topic = snapshot.data();
                   return Topic(
+                    authorUid: widget.uid,
                     uid: topic!.uid!, // Add a unique key to each child widget
                     title: topic.title!,
                     userName: topic.author!,

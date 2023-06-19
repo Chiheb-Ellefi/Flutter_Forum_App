@@ -7,6 +7,7 @@ import 'package:my_project/constants/contant_values.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/presentation/components/change_password/old_password.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 import 'package:my_project/presentation/pages/profile/edit_profile.dart';
 import 'package:my_project/presentation/widgets/homeScreenWidgets/manage_tags.dart';
 
@@ -85,12 +86,7 @@ class _SettingsState extends State<Settings> {
               iconSize: 30,
               color: Colors.black87,
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-              iconSize: 25,
-              color: Colors.black87,
-            ),
+            const MyNotifButton(),
           ],
         ),
         body: Center(

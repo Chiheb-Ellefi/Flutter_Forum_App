@@ -8,12 +8,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/notification_model/notif_model.dart';
 import 'package:my_project/data/models/tags_model/tags_model.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/main.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 import 'package:my_project/presentation/components/tag_dropdown.dart';
 import 'package:path/path.dart' as path;
 
@@ -100,6 +102,22 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
         .update({'tags': tagsList});
   }
 
+  DocumentReference<Map<String, dynamic>> get _notif =>
+      FirebaseFirestore.instance.collection(notifCollection).doc();
+  followNotif({notified}) async {
+    final DocumentReference<Map<String, dynamic>> notifRef = _notif;
+    final notifUid = notifRef.id;
+    NotificationModel notif = NotificationModel(
+        uid: notifUid,
+        notified: notified,
+        date: DateTime.now(),
+        notifier: uid,
+        notification: 'just posted a new topic');
+    await notifRef.set(notif.toMap());
+  }
+
+  List? myFollowers;
+
   Future publish() async {
     final topicUid = _topic.id;
     showDialog(
@@ -120,6 +138,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
       myData = UserModel.fromMap(data!);
       userName = myData.username!;
       topics = myData.topics;
+      myFollowers = myData.followers;
       String myPath;
       String imageUrl;
       //get images url and upload them to firestore storage
@@ -151,6 +170,9 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
       await _topic.set(topicModel.toMap());
       await userRef.doc(uid).update({'topics': topics});
       updateTags();
+      for (var follower in myFollowers!) {
+        await followNotif(notified: follower);
+      }
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
     } catch (e) {
@@ -296,13 +318,8 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
               myContext: context,
             ),
             toolbarHeight: 70,
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(FontAwesomeIcons.bell),
-                iconSize: 25,
-                color: Colors.black87,
-              ),
+            actions: const [
+              MyNotifButton(),
             ]),
         body: SingleChildScrollView(
             child: Padding(
@@ -441,8 +458,8 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
-                    child: const Text('Add'),
                     onPressed: pickImage,
+                    child: const Text('Add'),
                   ),
                 ],
               ),

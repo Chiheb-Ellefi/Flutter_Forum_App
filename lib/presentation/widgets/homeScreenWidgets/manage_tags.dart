@@ -6,6 +6,7 @@ import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/tags_model/tags_model.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 
 class ManageTags extends StatefulWidget {
   const ManageTags({super.key});
@@ -128,13 +129,8 @@ class _ManageTagsState extends State<ManageTags> {
           backgroundColor: Colors.white,
           elevation: 0,
           toolbarHeight: 70,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-              iconSize: 25,
-              color: Colors.black87,
-            ),
+          actions: const [
+            MyNotifButton(),
           ],
         ),
         body: Padding(

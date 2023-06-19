@@ -45,18 +45,16 @@ class _SecondSignUpState extends State<SecondSignUp> {
   void _showDatePicker() {
     showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: dateTime ?? DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime.now(),
     ).then((value) {
-      setState(() {
-        dateTime = value;
-      });
+      if (value != null) {
+        setState(() {
+          dateTime = value;
+        });
+      }
     });
-    // ignore: prefer_conditional_assignment
-    if (dateTime == null) {
-      dateTime = DateTime.now();
-    }
   }
 
   final _formKey2 = GlobalKey<FormState>();

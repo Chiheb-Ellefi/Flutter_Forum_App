@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/notification_model/notif_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
 
@@ -49,6 +50,7 @@ class _MyListTileState extends State<MyListTile> {
     } else {
       myFollowers!.add(widget.uid);
       myFollowing!.add(widget.followerUid);
+      await followNotif(notified: widget.followerUid);
     }
 
     try {
@@ -57,6 +59,20 @@ class _MyListTileState extends State<MyListTile> {
     } on FirebaseException catch (e) {
       Utils.showSnackBar(e.message);
     }
+  }
+
+  DocumentReference<Map<String, dynamic>> get _notif =>
+      FirebaseFirestore.instance.collection(notifCollection).doc();
+  followNotif({notified}) async {
+    final DocumentReference<Map<String, dynamic>> notifRef = _notif;
+    final notifUid = notifRef.id;
+    NotificationModel notif = NotificationModel(
+        uid: notifUid,
+        notified: notified,
+        date: DateTime.now(),
+        notifier: widget.uid,
+        notification: 'just started following you');
+    await notifRef.set(notif.toMap());
   }
 
   @override

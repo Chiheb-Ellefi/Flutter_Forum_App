@@ -17,7 +17,8 @@ class Topic extends StatefulWidget {
       required this.tags,
       required this.uid,
       required this.raters,
-      required this.notifEnabled});
+      required this.notifEnabled,
+      required this.authorUid});
   String uid;
   String title;
   String userName;
@@ -28,6 +29,7 @@ class Topic extends StatefulWidget {
   List<dynamic> image;
   int raters;
   bool? notifEnabled;
+  String? authorUid;
 
   @override
   State<Topic> createState() => _TopicState();
@@ -37,6 +39,7 @@ class _TopicState extends State<Topic> {
   onPressed() {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DisplayTopicWidget(
+              authorUid: widget.authorUid!,
               uid: widget.uid,
               title: widget.title,
               userName: widget.userName,

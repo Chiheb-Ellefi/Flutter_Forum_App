@@ -6,8 +6,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //add the user info to firestore : image and phone number and birthday date
-
     return const HomeScreenWidget();
   }
 }

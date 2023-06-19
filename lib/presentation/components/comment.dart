@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
+import 'package:my_project/data/models/notification_model/notif_model.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
 import 'package:my_project/main.dart';
 
@@ -10,6 +11,7 @@ import 'package:my_project/main.dart';
 class Comment extends StatefulWidget {
   Comment(
       {super.key,
+      required this.authorUid,
       required this.author,
       required this.text,
       required this.date,
@@ -21,6 +23,7 @@ class Comment extends StatefulWidget {
   int date;
   List<dynamic>? likes;
   List<dynamic> replies;
+  String authorUid;
 
   String uid;
 
@@ -66,6 +69,32 @@ class _CommentState extends State<Comment> {
     return myReply;
   }
 
+  DocumentReference<Map<String, dynamic>> get _notif =>
+      FirebaseFirestore.instance.collection(notifCollection).doc();
+  replyNotif({notified}) async {
+    final DocumentReference<Map<String, dynamic>> notifRef = _notif;
+    final notifUid = notifRef.id;
+    NotificationModel notif = NotificationModel(
+        uid: notifUid,
+        notified: notified,
+        date: DateTime.now(),
+        notifier: userUid,
+        notification: 'just replied to your comment "${widget.text}"');
+    await notifRef.set(notif.toMap());
+  }
+
+  likeNotif({notified}) async {
+    final DocumentReference<Map<String, dynamic>> notifRef = _notif;
+    final notifUid = notifRef.id;
+    NotificationModel notif = NotificationModel(
+        uid: notifUid,
+        notified: notified,
+        date: DateTime.now(),
+        notifier: userUid,
+        notification: 'just liked your comment "${widget.text}"');
+    await notifRef.set(notif.toMap());
+  }
+
   updateReplies() async {
     showDialog(
         context: context,
@@ -90,14 +119,17 @@ class _CommentState extends State<Comment> {
             .get();
 
         if (snapshot.docs.isNotEmpty) {
-          final comments = snapshot.docs.forEach((element) {
+          for (var element in snapshot.docs) {
             element.reference.update({
               'replies': replies,
             }).then((_) {
               reply.clear(); // Clear the text editing controller
             });
-          });
+          }
         }
+      }
+      if (widget.authorUid != userUid) {
+        await replyNotif(notified: widget.authorUid);
       }
     } catch (e) {
       print(e);
@@ -193,7 +225,7 @@ class _CommentState extends State<Comment> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (isLiked!) {
                         likes!.remove(userUid);
                         setState(() {
@@ -204,6 +236,7 @@ class _CommentState extends State<Comment> {
                         setState(() {
                           isLiked = !isLiked!;
                         });
+                        await likeNotif(notified: widget.authorUid);
                       }
                       updateLike();
                     },
@@ -276,6 +309,7 @@ class _CommentState extends State<Comment> {
                   itemBuilder: (context, index) {
                     final comment = widget.replies[index];
                     return Comment(
+                      authorUid: widget.authorUid,
                       uid: widget.uid,
                       text: comment['text'],
                       author: comment['author'],

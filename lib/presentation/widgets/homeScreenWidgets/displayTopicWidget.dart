@@ -13,6 +13,7 @@ import 'package:my_project/presentation/components/comment.dart';
 import 'package:my_project/presentation/components/comment_alert.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
 import 'package:my_project/presentation/components/rate_dialog.dart';
+import 'package:my_project/presentation/components/report_alert.dart';
 import 'package:my_project/presentation/components/tag.dart';
 import 'package:my_project/presentation/pages/authentification/welcome_page.dart';
 import 'package:my_project/presentation/widgets/profile/profile_widget.dart';
@@ -60,7 +61,6 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   @override
   void initState() {
     super.initState();
-
     commentsEnabled = widget.notifEnabled;
   }
 
@@ -153,6 +153,15 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
+  reportTopic() async {
+    showDialog(
+        context: context,
+        builder: (context) => ReportAlert(
+              reporter: uid,
+              reported: authUid,
+            ));
+  }
+
   onSelected() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const Welcome()));
@@ -167,7 +176,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await showDialog(
-              barrierDismissible: widget.notifEnabled!,
+              barrierDismissible: commentsEnabled!,
               context: context,
               builder: (context) {
                 return CommentAlert(
@@ -207,7 +216,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                       if (authUid != uid)
                         PopupMenuItem(
                             onTap: () {
-                              Navigator.pop(context);
+                              reportTopic();
                             },
                             child: const Row(
                               children: [
@@ -274,8 +283,8 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                           ),
                         ),
                         InkWell(
-                          onTap: () async {
-                            await showDialog(
+                          onTap: () {
+                            showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return RatingDialog(
@@ -503,7 +512,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                 height: 20,
               ),
               Visibility(
-                visible: isListViewVisible,
+                visible: isListViewVisible && commentsEnabled!,
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

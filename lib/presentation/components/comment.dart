@@ -236,7 +236,9 @@ class _CommentState extends State<Comment> {
                         setState(() {
                           isLiked = !isLiked!;
                         });
-                        await likeNotif(notified: widget.authorUid);
+                        if (userUid != widget.authorUid) {
+                          await likeNotif(notified: widget.authorUid);
+                        }
                       }
                       updateLike();
                     },

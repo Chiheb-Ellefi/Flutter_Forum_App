@@ -61,7 +61,7 @@ class _SettingsState extends State<Settings> {
     getProfilePic();
   }
 
-  bool light0 = false;
+  bool light0 = true;
 
   @override
   Widget build(BuildContext context) {
@@ -77,16 +77,8 @@ class _SettingsState extends State<Settings> {
           backgroundColor: Colors.white,
           elevation: 0,
           toolbarHeight: 70,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-              ),
-              iconSize: 30,
-              color: Colors.black87,
-            ),
-            const MyNotifButton(),
+          actions: const [
+            MyNotifButton(),
           ],
         ),
         body: Center(
@@ -200,7 +192,18 @@ class _SettingsState extends State<Settings> {
                       style: TextStyle(fontSize: 20),
                     ),
                     trailing: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: RadioListTile(
+                                    title: const Text('English'),
+                                    value: 1,
+                                    onChanged: (index) {},
+                                    groupValue: 1,
+                                  ),
+                                ));
+                      },
                       icon: const Icon(
                         FontAwesomeIcons.chevronRight,
                       ),

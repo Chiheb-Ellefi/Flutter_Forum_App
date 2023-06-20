@@ -271,11 +271,13 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
                         onPressed: () {
                           str = controller.text;
                           // Call the method to add an item to the data source
-                          addItemToDataSource(
-                              str.substring(0, 1).toUpperCase() +
-                                  str.substring(1).toLowerCase());
-
-                          // Close the dialog
+                          try {
+                            addItemToDataSource(
+                                str.substring(0, 1).toUpperCase() +
+                                    str.substring(1).toLowerCase());
+                          } catch (e) {
+                            print(e);
+                          }
                           controller.clear();
                         },
                         icon: const Icon(

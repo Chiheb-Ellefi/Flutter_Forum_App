@@ -11,6 +11,7 @@ import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/add_topic/get_topic/get_topics.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
 import 'package:my_project/presentation/components/notification/notif_button.dart';
+import 'package:my_project/presentation/components/report_alert.dart';
 import 'package:my_project/presentation/components/topic.dart';
 
 // ignore: must_be_immutable
@@ -123,6 +124,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     isMyProfile = uid == widget.uid;
   }
 
+  reportTopic() async {
+    showDialog(
+        context: context,
+        builder: (context) => ReportAlert(
+              reporter: uid,
+              reported: widget.uid,
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     followText = isFollowing ? 'UnFollow' : 'Follow';
@@ -140,15 +150,35 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           elevation: 0,
           toolbarHeight: 70,
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-              ),
-              iconSize: 30,
-              color: Colors.black87,
-            ),
             const MyNotifButton(),
+            if (widget.uid != uid)
+              PopupMenuButton(
+                  icon: const Icon(
+                    Icons.more_vert,
+                    color: Colors.black87,
+                    size: 30,
+                  ),
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                            onTap: () {
+                              reportTopic();
+                            },
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.flag,
+                                  color: Colors.black87,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Report',
+                                  style: TextStyle(fontSize: 20),
+                                )
+                              ],
+                            )),
+                      ]),
           ],
         ),
         body: SingleChildScrollView(

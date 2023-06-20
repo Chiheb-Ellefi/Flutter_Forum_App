@@ -23,16 +23,8 @@ class Followers extends StatelessWidget {
             backgroundColor: Colors.white,
             elevation: 0,
             toolbarHeight: 70,
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                ),
-                iconSize: 30,
-                color: Colors.black87,
-              ),
-              const MyNotifButton(),
+            actions: const [
+              MyNotifButton(),
             ],
             bottom: const TabBar(
               indicatorColor: Colors.black, // Customize the indicator color

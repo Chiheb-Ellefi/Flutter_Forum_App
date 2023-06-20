@@ -159,16 +159,8 @@ class _EditProileState extends State<EditProile> {
             elevation: 0,
             toolbarHeight: 70,
             leading: MyLeadingButton(myContext: context),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.search,
-                ),
-                iconSize: 30,
-                color: Colors.black87,
-              ),
-              const MyNotifButton(),
+            actions: const [
+              MyNotifButton(),
             ],
           ),
           body: SingleChildScrollView(

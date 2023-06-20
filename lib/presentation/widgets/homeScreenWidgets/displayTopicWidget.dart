@@ -12,6 +12,7 @@ import 'package:my_project/main.dart';
 import 'package:my_project/presentation/components/comment.dart';
 import 'package:my_project/presentation/components/comment_alert.dart';
 import 'package:my_project/presentation/components/leadingButton.dart';
+import 'package:my_project/presentation/components/notification/notif_button.dart';
 import 'package:my_project/presentation/components/rate_dialog.dart';
 import 'package:my_project/presentation/components/report_alert.dart';
 import 'package:my_project/presentation/components/tag.dart';
@@ -204,12 +205,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
           ),
           toolbarHeight: 70,
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(FontAwesomeIcons.bell),
-              iconSize: 25,
-              color: Colors.black87,
-            ),
+            const MyNotifButton(),
             PopupMenuButton(
                 icon: const Icon(
                   Icons.more_vert,

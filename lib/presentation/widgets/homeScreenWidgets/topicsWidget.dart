@@ -188,9 +188,9 @@ class _TopicsWidgetState extends State<TopicsWidget> {
             width: double.infinity,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: tags!.length,
+                itemCount: tags.length,
                 itemBuilder: (context, index) {
-                  final tag = tags![index];
+                  final tag = tags[index];
                   final isEnabled = isTagEnabled(tag);
                   return GestureDetector(
                     onTap: () {

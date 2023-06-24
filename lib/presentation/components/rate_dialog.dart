@@ -28,6 +28,7 @@ class _RatingDialogState extends State<RatingDialog> {
           'rating': widget.rating +
               rate, // Update the 'rating' field with the new rating value
           'raters': widget.raters + 1,
+          'rate': widget.rating / widget.raters
         });
       }
     });

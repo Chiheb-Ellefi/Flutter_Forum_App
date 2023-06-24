@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:my_project/data/models/topic_model/comment_model.dart';
-
 class TopicModel {
   String? uid;
   String? title;
@@ -17,6 +15,7 @@ class TopicModel {
   List<dynamic>? files;
   String? authorUid;
   bool? notifEnabled;
+  double? rate;
   TopicModel({
     this.uid,
     this.title,
@@ -29,6 +28,7 @@ class TopicModel {
     this.files,
     this.authorUid,
     this.notifEnabled,
+    this.rate,
   });
 
   TopicModel copyWith({
@@ -43,6 +43,7 @@ class TopicModel {
     List<dynamic>? files,
     String? authorUid,
     bool? notifEnabled,
+    double? rate,
   }) {
     return TopicModel(
       uid: uid ?? this.uid,
@@ -56,6 +57,7 @@ class TopicModel {
       files: files ?? this.files,
       authorUid: authorUid ?? this.authorUid,
       notifEnabled: notifEnabled ?? this.notifEnabled,
+      rate: rate ?? this.rate,
     );
   }
 
@@ -72,6 +74,7 @@ class TopicModel {
       'files': files,
       'authorUid': authorUid,
       'notifEnabled': notifEnabled,
+      'rate': rate,
     };
   }
 
@@ -96,6 +99,7 @@ class TopicModel {
       authorUid: map['authorUid'] != null ? map['authorUid'] as String : null,
       notifEnabled:
           map['notifEnabled'] != null ? map['notifEnabled'] as bool : null,
+      rate: map['rate'] != null ? map['rate'] as double : null,
     );
   }
 
@@ -106,7 +110,7 @@ class TopicModel {
 
   @override
   String toString() {
-    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files, authorUid: $authorUid, notifEnabled: $notifEnabled)';
+    return 'TopicModel(uid: $uid, title: $title, description: $description, author: $author, date: $date, rating: $rating, raters: $raters, tags: $tags, files: $files, authorUid: $authorUid, notifEnabled: $notifEnabled, rate: $rate)';
   }
 
   @override
@@ -123,7 +127,8 @@ class TopicModel {
         listEquals(other.tags, tags) &&
         listEquals(other.files, files) &&
         other.authorUid == authorUid &&
-        other.notifEnabled == notifEnabled;
+        other.notifEnabled == notifEnabled &&
+        other.rate == rate;
   }
 
   @override
@@ -138,6 +143,7 @@ class TopicModel {
         tags.hashCode ^
         files.hashCode ^
         authorUid.hashCode ^
-        notifEnabled.hashCode;
+        notifEnabled.hashCode ^
+        rate.hashCode;
   }
 }

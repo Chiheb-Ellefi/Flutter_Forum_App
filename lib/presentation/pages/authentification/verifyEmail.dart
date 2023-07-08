@@ -99,7 +99,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                     FirebaseAuth.instance.signOut();
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => const Welcome()),
+                      MaterialPageRoute(builder: (context) => Welcome()),
                       (route) => false,
                     );
                   },
@@ -139,7 +139,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Welcome()));
+                                    builder: (context) => Welcome()));
                           },
                           backColor: myBlue1)
                     ],

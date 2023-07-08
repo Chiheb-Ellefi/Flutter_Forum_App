@@ -43,19 +43,23 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   String followText = '';
 
   Future<void> getProfile() async {
-    DocumentSnapshot snapshot = await userRef.doc(widget.uid).get();
-    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
-    UserModel userData = UserModel.fromMap(data!);
-    image = userData.profilePicture;
-    userName = userData.username;
-    followers = userData.followers ?? [];
-    topics = userData.topics ?? [];
-    isFollowing = followers!.contains(uid);
-    followText = isFollowing ? 'UnFollow' : 'Follow';
-    if (mounted) {
-      setState(() {
-        // Update the widget's state after retrieving the data
-      });
+    try {
+      DocumentSnapshot snapshot = await userRef.doc(widget.uid).get();
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      UserModel userData = UserModel.fromMap(data!);
+      image = userData.profilePicture;
+      userName = userData.username;
+      followers = userData.followers ?? [];
+      topics = userData.topics ?? [];
+      isFollowing = followers!.contains(uid);
+      followText = isFollowing ? 'UnFollow' : 'Follow';
+      if (mounted) {
+        setState(() {
+          // Update the widget's state after retrieving the data
+        });
+      }
+    } on FirebaseException catch (e) {
+      Utils.showSnackBar(e.message);
     }
   }
 
@@ -128,6 +132,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     showDialog(
         context: context,
         builder: (context) => ReportAlert(
+              collection: reportsCollection,
               reporter: uid,
               reported: widget.uid,
             ));

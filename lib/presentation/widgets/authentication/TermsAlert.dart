@@ -74,6 +74,7 @@ class _TermsAlertState extends State<TermsAlert> {
           followers: [],
           following: [],
           topics: [],
+          isAdmin: false,
           isAnonymous: false);
       await _users.doc(result.user!.uid).set(userModel.toMap());
       //initialize the tags document for the new user

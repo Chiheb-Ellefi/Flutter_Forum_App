@@ -160,8 +160,9 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
     showDialog(
         context: context,
         builder: (context) => ReportAlert(
+              collection: topicsReports,
               reporter: uid,
-              reported: authUid,
+              reported: widget.uid,
             ));
   }
 

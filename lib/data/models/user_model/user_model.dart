@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 class UserModel {
   String? uid;
@@ -13,6 +13,7 @@ class UserModel {
   List? following;
   List? topics;
   bool? isAnonymous;
+  bool? isAdmin;
   UserModel({
     this.uid,
     this.username,
@@ -24,6 +25,7 @@ class UserModel {
     this.following,
     this.topics,
     this.isAnonymous,
+    this.isAdmin,
   });
 
   UserModel copyWith({
@@ -37,6 +39,7 @@ class UserModel {
     List? following,
     List? topics,
     bool? isAnonymous,
+    bool? isAdmin,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -49,6 +52,7 @@ class UserModel {
       following: following ?? this.following,
       topics: topics ?? this.topics,
       isAnonymous: isAnonymous ?? this.isAnonymous,
+      isAdmin: isAdmin ?? this.isAdmin,
     );
   }
 
@@ -58,34 +62,46 @@ class UserModel {
       'username': username,
       'email': email,
       'phoneNumber': phoneNumber,
-      'dateOfBirth': dateOfBirth!.millisecondsSinceEpoch,
+      'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
       'profilePicture': profilePicture,
       'followers': followers,
       'following': following,
       'topics': topics,
       'isAnonymous': isAnonymous,
+      'isAdmin': isAdmin,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      uid: map['uid'] as String,
-      username: map['username'] as String,
-      email: map['email'] as String,
-      phoneNumber: map['phoneNumber'] as String,
-      dateOfBirth:
-          DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int),
-      profilePicture: map['profilePicture'] as String,
+      uid: map['uid'] != null ? map['uid'] as String : null,
+      username: map['username'] != null ? map['username'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
+      phoneNumber:
+          map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+      dateOfBirth: map['dateOfBirth'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['dateOfBirth'] as int)
+          : null,
+      profilePicture: map['profilePicture'] != null
+          ? map['profilePicture'] as String
+          : null,
       followers: List.from((map['followers'] as List)),
       following: List.from((map['following'] as List)),
       topics: List.from((map['topics'] as List)),
-      isAnonymous: map['isAnonymous'] as bool,
+      isAnonymous:
+          map['isAnonymous'] != null ? map['isAnonymous'] as bool : null,
+      isAdmin: map['isAdmin'] != null ? map['isAdmin'] as bool : null,
     );
   }
 
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
   @override
   String toString() {
-    return 'User(uid: $uid, username: $username, email: $email, phoneNumber: $phoneNumber, dateOfBirth: $dateOfBirth, profilePicture: $profilePicture, followers: $followers, following: $following, topics: $topics, isAnonymous: $isAnonymous)';
+    return 'UserModel(uid: $uid, username: $username, email: $email, phoneNumber: $phoneNumber, dateOfBirth: $dateOfBirth, profilePicture: $profilePicture, followers: $followers, following: $following, topics: $topics, isAnonymous: $isAnonymous, isAdmin: $isAdmin)';
   }
 
   @override
@@ -98,10 +114,11 @@ class UserModel {
         other.phoneNumber == phoneNumber &&
         other.dateOfBirth == dateOfBirth &&
         other.profilePicture == profilePicture &&
-        listEquals(other.followers, followers) &&
-        listEquals(other.following, following) &&
-        listEquals(other.topics, topics) &&
-        other.isAnonymous == isAnonymous;
+        other.followers == followers &&
+        other.following == following &&
+        other.topics == topics &&
+        other.isAnonymous == isAnonymous &&
+        other.isAdmin == isAdmin;
   }
 
   @override
@@ -115,6 +132,7 @@ class UserModel {
         followers.hashCode ^
         following.hashCode ^
         topics.hashCode ^
-        isAnonymous.hashCode;
+        isAnonymous.hashCode ^
+        isAdmin.hashCode;
   }
 }

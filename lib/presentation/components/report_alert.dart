@@ -6,10 +6,15 @@ import 'package:my_project/data/models/report_model/report_model.dart';
 import 'package:my_project/main.dart';
 
 class ReportAlert extends StatefulWidget {
-  const ReportAlert({Key? key, required this.reported, required this.reporter})
+  const ReportAlert(
+      {Key? key,
+      required this.reported,
+      required this.reporter,
+      required this.collection})
       : super(key: key);
   final String? reporter;
   final String? reported;
+  final String collection;
 
   @override
   State<ReportAlert> createState() => _ReportAlertState();
@@ -52,7 +57,7 @@ class _ReportAlertState extends State<ReportAlert> {
           reporter: widget.reporter);
 
       await FirebaseFirestore.instance
-          .collection(reportsCollection)
+          .collection(widget.collection)
           .add(report.toMap());
     } catch (e) {
       print(e);

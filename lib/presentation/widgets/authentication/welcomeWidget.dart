@@ -22,75 +22,84 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       Navigator.pushNamed(context, '/login');
     }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-              flex: 5,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /* Image.asset(''), */
-                    const Text(
-                      "Let's get Started",
-                      style: TextStyle(fontFamily: 'Inter', fontSize: 30),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Column(children: [
-                      MyButton(
-                        text: 'Create Acount',
-                        color: myBlue4,
-                        backColor: myBlue2,
-                        onPressed: signUp,
+    return Material(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+                flex: 5,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Let's get Started",
+                        style: TextStyle(fontFamily: 'Inter', fontSize: 30),
                       ),
                       const SizedBox(
-                        height: 15,
+                        height: 50,
                       ),
-                      MyButton(
-                        text: 'Login',
-                        color: myBlue1,
-                        backColor: myBlue1,
-                        onPressed: signIn,
+                      Column(children: [
+                        MyButton(
+                          text: 'Create Acount',
+                          color: myBlue4,
+                          backColor: myBlue2,
+                          onPressed: signUp,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        MyButton(
+                          text: 'Login',
+                          color: myBlue1,
+                          backColor: myBlue1,
+                          onPressed: signIn,
+                        ),
+                      ]),
+                      const SizedBox(
+                        height: 70,
                       ),
-                    ]),
-                    const SizedBox(
-                      height: 70,
+                    ],
+                  ),
+                )),
+            Expanded(
+              flex: 1,
+              child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: InkWell(
+                    onTap: () async {
+                      dynamic result = await _auth.signInAnon();
+                      if (result == null) {
+                        print('error signing in');
+                      }
+                      print('signed in');
+                      print(result);
+                    },
+                    child: const SizedBox(
+                      width: double.infinity,
+                      height: 100,
+                      child: Material(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 100,
+                          child: Center(
+                            child: Text(
+                              'Continue as a guest',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              )),
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: InkWell(
-                onTap: () async {
-                  dynamic result = await _auth.signInAnon();
-                  if (result == null) {
-                    print('error signing in');
-                  }
-                  print('signed in');
-                  print(result);
-                },
-                child: const SizedBox(
-                    width: double.infinity,
-                    height: 100,
-                    child: Center(
-                        child: Text(
-                      'Continue as a guest ',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400),
-                    ))),
-              ),
+                  )),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

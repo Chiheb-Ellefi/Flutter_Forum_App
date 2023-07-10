@@ -232,6 +232,9 @@ class _SettingsState extends State<Settings> {
                   InkWell(
                     onTap: () {
                       FirebaseAuth.instance.signOut();
+                      FirebaseAuth.instance
+                          .authStateChanges()
+                          .listen((User? user) {});
                     },
                     child: const ListTile(
                       leading: Icon(

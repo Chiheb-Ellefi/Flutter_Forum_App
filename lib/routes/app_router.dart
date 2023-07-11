@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/presentation/pages/addTopic/addTopic.dart';
-import 'package:my_project/presentation/pages/authentification/LoginPage.dart';
+import 'package:my_project/src/authentification/sign_up/screens/first_sign_up.dart';
 
-import 'package:my_project/presentation/pages/authentification/fingerPrintAuth.dart';
-import 'package:my_project/presentation/pages/authentification/signUp.dart';
+import 'package:my_project/src/authentification/sign_in/screens/login_screen.dart';
 
-import 'package:my_project/presentation/pages/authentification/welcome_page.dart';
+import 'package:my_project/src/authentification/local_sign_in/screens/finger_print_auth.dart';
+
+import 'package:my_project/src/authentification/welcome/screens/welcome_page.dart';
+import 'package:my_project/src/add_topic/screens/add_topic.dart';
 
 import '../constants/strings.dart';
 
@@ -16,7 +17,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const Welcome());
       case signUp:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const SignUp());
+            builder: (BuildContext context) => const FirstSignUp());
       case fingerPrintAuth:
         return MaterialPageRoute(
             builder: (BuildContext context) => const FingerPrintPage());
@@ -25,7 +26,7 @@ class AppRouter {
             builder: (BuildContext context) => const LoginPage());
       case addtopic:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const CreateTopic());
+            builder: (BuildContext context) => const CreateTopicWidget());
 
       default:
         // Handle unknown routes here

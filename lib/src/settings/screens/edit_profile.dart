@@ -58,7 +58,7 @@ class _EditProileState extends State<EditProile> {
         this.image = imageTemporary;
       });
     } on PlatformException catch (e) {
-      print('Failed to pick image: ${e}');
+      print('Failed to pick image:${e}');
     }
   }
 

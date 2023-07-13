@@ -14,6 +14,7 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
+  bool notShowPassword = true;
   final _formKey = GlobalKey<FormState>();
   String? mail, password;
   SignInService service = SignInService();
@@ -68,23 +69,44 @@ class _LoginWidgetState extends State<LoginWidget> {
                 const SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                  child: TextFormField(
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    onSaved: (value) {
-                      password = value ?? "";
-                    },
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Password is required';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                        label: Text('Password'), border: OutlineInputBorder()),
+                SizedBox(
+                  height: 56,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    child: TextFormField(
+                      obscureText: notShowPassword,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      onSaved: (value) {
+                        password = value ?? "";
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Password is required';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          suffix: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                notShowPassword = !notShowPassword;
+                              });
+                            },
+                            icon: notShowPassword
+                                ? const Icon(
+                                    Icons.remove_red_eye_outlined,
+                                    color: Colors.black87,
+                                    size: 20,
+                                  )
+                                : const Icon(
+                                    Icons.remove_red_eye,
+                                    size: 20,
+                                  ),
+                          ),
+                          label: Text('Password'),
+                          border: OutlineInputBorder()),
+                    ),
                   ),
                 ),
                 const SizedBox(

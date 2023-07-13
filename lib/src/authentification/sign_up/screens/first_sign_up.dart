@@ -20,6 +20,8 @@ class FirstSignUp extends StatefulWidget {
 class _FirstSignUpState extends State<FirstSignUp> {
   final _formKey = GlobalKey<FormState>();
   String _mail = '', _password = '', _confirm = '';
+  bool notShowPassword = true;
+  bool notShowConfirmPassword = true;
   File? image;
   Future pickImage() async {
     try {
@@ -120,47 +122,88 @@ class _FirstSignUpState extends State<FirstSignUp> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextFormField(
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        onChanged: (value) {
-                          _password = value;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Password is required';
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            label: Text('Password'),
-                            border: OutlineInputBorder()),
+                    SizedBox(
+                      height: 56,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        child: TextFormField(
+                          obscureText: notShowPassword,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          onChanged: (value) {
+                            _password = value;
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Password is required';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              suffix: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    notShowPassword = !notShowPassword;
+                                  });
+                                },
+                                icon: notShowPassword
+                                    ? const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Colors.black87,
+                                        size: 20,
+                                      )
+                                    : const Icon(
+                                        Icons.remove_red_eye,
+                                        size: 20,
+                                      ),
+                              ),
+                              label: const Text('Password'),
+                              border: const OutlineInputBorder()),
+                        ),
                       ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: TextFormField(
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        onSaved: (value) {
-                          _confirm = value ?? "";
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Confirm please your password';
-                          } else if (value != _password) {
-                            return 'Password do not match';
-                          }
-                        },
-                        decoration: const InputDecoration(
-                            label: Text('Confirm password'),
-                            border: OutlineInputBorder()),
+                    SizedBox(
+                      height: 56,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        child: TextFormField(
+                          obscureText: notShowConfirmPassword,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          onSaved: (value) {
+                            _confirm = value ?? "";
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Confirm please your password';
+                            } else if (value != _password) {
+                              return 'Password do not match';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              suffix: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    notShowConfirmPassword =
+                                        !notShowConfirmPassword;
+                                  });
+                                },
+                                icon: notShowConfirmPassword
+                                    ? const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Colors.black87,
+                                        size: 20,
+                                      )
+                                    : const Icon(
+                                        Icons.remove_red_eye,
+                                        size: 20,
+                                      ),
+                              ),
+                              label: Text('Confirm password'),
+                              border: OutlineInputBorder()),
+                        ),
                       ),
                     ),
                   ],

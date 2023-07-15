@@ -29,6 +29,7 @@ class _CreateTopicWidgetState extends State<CreateTopicWidget> {
   final _description = TextEditingController();
   final GlobalKey<TagsState> _tagKeyState = GlobalKey();
   List? topics = [];
+
   String str = '';
   List<File> images = [];
   final uid = FirebaseAuth.instance.currentUser!.uid;

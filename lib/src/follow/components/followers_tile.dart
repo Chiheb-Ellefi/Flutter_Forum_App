@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/constants/firebase_consts.dart';
-import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/src/follow/webservice/follow_service.dart';
 
 // ignore: must_be_immutable
@@ -15,8 +14,11 @@ class MyListTile extends StatefulWidget {
       required this.uid,
       required this.followers,
       required this.following,
-      required this.followerFollowers});
+      required this.followerFollowers,
+      required this.name,
+      required this.token});
   final String text;
+  String? name, token;
   final String image;
   final String uid;
   final String followerUid;
@@ -30,7 +32,7 @@ class _MyListTileState extends State<MyListTile> {
   List? myFollowers = [];
   List? myFollowing = [];
   bool isFollowing = false;
-  UserModel myData = UserModel();
+
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
   FollowersService service = FollowersService();
@@ -75,6 +77,8 @@ class _MyListTileState extends State<MyListTile> {
         IconButton(
           onPressed: () {
             service.follow(
+                name: widget.name,
+                token: widget.token,
                 isFollowing: isFollowing,
                 myFollowers: myFollowers,
                 myFollowing: myFollowing,

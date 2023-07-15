@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
+import 'package:my_project/data/models/user_model/user_model.dart';
+import 'package:my_project/src/profile/webservices/profile_service.dart';
 import 'package:my_project/src/topics/webservices/comment_service.dart';
 
 // ignore: must_be_immutable
@@ -36,6 +38,7 @@ class _CommentState extends State<Comment> {
   bool? isLiked;
   final userUid = FirebaseAuth.instance.currentUser!.uid;
   Icon? myIcon;
+  String? name, token;
   List<dynamic>? myComments;
   List<dynamic>? myReplies;
   @override
@@ -44,6 +47,28 @@ class _CommentState extends State<Comment> {
     // TODO: implement initState
     likes = widget.likes;
     isLiked = widget.likes!.contains(userUid);
+    getToken(uid: widget.authorUid);
+    getProfile(uid: userUid);
+  }
+
+  ProfileService profileService = ProfileService();
+  getProfile({uid}) async {
+    UserModel? userData = await profileService.getUserProfile(userUid: uid);
+    if (mounted) {
+      setState(() {
+        name = userData!.username;
+      });
+    }
+  }
+
+  getToken({uid}) async {
+    UserModel? userData = await profileService.getUserProfile(userUid: uid);
+    if (mounted) {
+      setState(() {
+        token = userData!.token;
+      });
+    }
+    print(token);
   }
 
   CommentService service = CommentService();
@@ -132,12 +157,12 @@ class _CommentState extends State<Comment> {
                         setState(() {
                           isLiked = !isLiked!;
                         });
-                        if (userUid != widget.authorUid) {
-                          await service.likeNotif(
-                              notified: widget.authorUid,
-                              userUid: userUid,
-                              text: widget.text);
-                        }
+                        await service.likeNotif(
+                            token: token,
+                            name: name,
+                            notified: widget.authorUid,
+                            userUid: userUid,
+                            text: widget.text);
                       }
                       service.updateLike(
                           uid: widget.uid, likes: likes, date: widget.date);

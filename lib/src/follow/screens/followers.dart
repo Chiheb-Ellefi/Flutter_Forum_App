@@ -21,6 +21,7 @@ class _FollowersWidgetState extends State<FollowersWidget> {
   CollectionReference userRef =
       FirebaseFirestore.instance.collection(usersCollection);
   String uid = FirebaseAuth.instance.currentUser!.uid;
+  String? name, token;
   FollowersService service = FollowersService();
   getProfile() async {
     myData = await service.getProfilePic(uid: uid, userRef: userRef);
@@ -28,6 +29,7 @@ class _FollowersWidgetState extends State<FollowersWidget> {
       setState(() {
         following = myData!.following;
         followers = myData!.followers;
+        name = myData!.username;
       });
     }
   }
@@ -67,8 +69,9 @@ class _FollowersWidgetState extends State<FollowersWidget> {
                 if (userData != null) {
                   String username = userData['username'] ?? '';
                   String profilePicture = userData['profilePicture'];
-                  List followerFollowers = userData[
-                      'followers']; // Get the username from the user data
+                  List followerFollowers = userData['followers'];
+                  token =
+                      userData['token']; // Get the username from the user data
                   return InkWell(
                     onTap: () {
                       Navigator.push(
@@ -78,6 +81,8 @@ class _FollowersWidgetState extends State<FollowersWidget> {
                                   ProfileWidget(uid: followers![index])));
                     },
                     child: MyListTile(
+                      name: name,
+                      token: token,
                       followerFollowers: followerFollowers,
                       uid: uid,
                       followerUid: followers![index],

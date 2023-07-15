@@ -7,6 +7,7 @@ import 'package:my_project/data/models/tags_model/tags_model.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/main.dart';
+import 'package:my_project/src/notification/webservcies/firebase_notification_api.dart';
 import 'package:path/path.dart' as path;
 
 class AddTopicService {
@@ -27,8 +28,9 @@ class AddTopicService {
         .update({'tags': tagsList});
   }
 
-  followNotif({notified, notifRef, uid}) async {
+  addTopicNotif({notified, notifRef, uid, token, name}) async {
     final notifUid = notifRef.id;
+    final api = FirebaseApi();
     NotificationModel notif = NotificationModel(
         uid: notifUid,
         notified: notified,
@@ -36,6 +38,9 @@ class AddTopicService {
         notifier: uid,
         notification: 'just posted a new topic');
     await notifRef.set(notif.toMap());
+    await api.requestPermission();
+    await api.sendPushMesssage(
+        token, 'New topic', '$name just posted a new topic');
   }
 
   Future publish(
@@ -104,7 +109,13 @@ class AddTopicService {
       await userRef.doc(uid).update({'topics': topics});
       await updateTags(uid: uid, tagsList: tagsList, myTags: myTags);
       for (var follower in myFollowers!) {
-        await followNotif(notified: follower, notifRef: notif, uid: uid);
+        String? token = await getToken(follower);
+        await addTopicNotif(
+            notified: follower,
+            notifRef: notif,
+            uid: uid,
+            name: userName,
+            token: token);
       }
       // ignore: use_build_context_synchronously
       Navigator.pop(context);
@@ -112,5 +123,19 @@ class AddTopicService {
       print(e);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
+  }
+
+  Future<String>? getToken(uid) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(uid)
+        .get();
+
+    Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+    if (data != null) {
+      UserModel myData = UserModel.fromMap(data);
+      return myData.token!;
+    }
+    return '';
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/data/models/topic_model/comment_model.dart';
+import 'package:my_project/data/models/user_model/user_model.dart';
+import 'package:my_project/src/profile/webservices/profile_service.dart';
 import 'package:my_project/src/topics/components/comment.dart';
 import 'package:my_project/src/topics/components/comment_alert.dart';
 import 'package:my_project/src/home/components/leading_button.dart';
@@ -23,6 +25,7 @@ class DisplayTopicWidget extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.userName,
+      required this.token,
       required this.date,
       required this.rating,
       required this.image,
@@ -35,6 +38,7 @@ class DisplayTopicWidget extends StatefulWidget {
       : super(key: key);
 
   String uid;
+  String token;
   String title;
   String userName;
   DateTime date;
@@ -58,13 +62,14 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
   bool isCommentListVisible = false;
   bool isLiked = false;
   String len = '';
-  String? authUid;
+  String? authUid, name;
   bool? commentsEnabled;
 
   @override
   void initState() {
     super.initState();
     getAuthUid();
+    getProfile(uid: uid);
     commentsEnabled = widget.notifEnabled;
     commentsStream = service.getComments(uid: widget.uid);
     commentsSubscription = commentsStream!.listen((comments) {
@@ -86,6 +91,16 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
     authUid = await service.getAuthUid(uid: widget.uid);
   }
 
+  ProfileService profileService = ProfileService();
+  getProfile({uid}) async {
+    UserModel? userData = await profileService.getUserProfile(userUid: uid);
+    if (mounted) {
+      setState(() {
+        name = userData!.username;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     commentsStream = service.getComments(uid: widget.uid);
@@ -98,10 +113,11 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
             context: context,
             builder: (context) {
               return CommentAlert(
+                token: widget.token,
                 title: widget.title,
-                authorUid: widget.authorUid,
-                author: widget.userName,
-                uid: widget.uid,
+                authorUid: authUid!,
+                author: name!,
+                topicUid: widget.uid,
                 enabled: commentsEnabled!,
                 onCommentAdded: () {
                   setState(() {}); // Rebuild the widget
@@ -460,7 +476,7 @@ class _DisplayTopicWidgetState extends State<DisplayTopicWidget> {
                         itemBuilder: (context, index) {
                           final comment = comments[index];
                           return Comment(
-                            authorUid: widget.authorUid,
+                            authorUid: comment.authorUid!,
                             uid: widget.uid,
                             text: comment.text!,
                             author: comment.author!,

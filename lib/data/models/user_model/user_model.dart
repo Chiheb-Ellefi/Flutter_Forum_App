@@ -14,6 +14,7 @@ class UserModel {
   List? topics;
   bool? isAnonymous;
   bool? isAdmin;
+  String? token;
   UserModel({
     this.uid,
     this.username,
@@ -26,6 +27,7 @@ class UserModel {
     this.topics,
     this.isAnonymous,
     this.isAdmin,
+    this.token,
   });
 
   UserModel copyWith({
@@ -40,6 +42,7 @@ class UserModel {
     List? topics,
     bool? isAnonymous,
     bool? isAdmin,
+    String? token,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -53,6 +56,7 @@ class UserModel {
       topics: topics ?? this.topics,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       isAdmin: isAdmin ?? this.isAdmin,
+      token: token ?? this.token,
     );
   }
 
@@ -69,6 +73,7 @@ class UserModel {
       'topics': topics,
       'isAnonymous': isAnonymous,
       'isAdmin': isAdmin,
+      'token': token,
     };
   }
 
@@ -91,6 +96,7 @@ class UserModel {
       isAnonymous:
           map['isAnonymous'] != null ? map['isAnonymous'] as bool : null,
       isAdmin: map['isAdmin'] != null ? map['isAdmin'] as bool : null,
+      token: map['token'] != null ? map['token'] as String : null,
     );
   }
 
@@ -101,7 +107,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, username: $username, email: $email, phoneNumber: $phoneNumber, dateOfBirth: $dateOfBirth, profilePicture: $profilePicture, followers: $followers, following: $following, topics: $topics, isAnonymous: $isAnonymous, isAdmin: $isAdmin)';
+    return 'UserModel(uid: $uid, username: $username, email: $email, phoneNumber: $phoneNumber, dateOfBirth: $dateOfBirth, profilePicture: $profilePicture, followers: $followers, following: $following, topics: $topics, isAnonymous: $isAnonymous, isAdmin: $isAdmin, token: $token)';
   }
 
   @override
@@ -118,7 +124,8 @@ class UserModel {
         other.following == following &&
         other.topics == topics &&
         other.isAnonymous == isAnonymous &&
-        other.isAdmin == isAdmin;
+        other.isAdmin == isAdmin &&
+        other.token == token;
   }
 
   @override
@@ -133,6 +140,7 @@ class UserModel {
         following.hashCode ^
         topics.hashCode ^
         isAnonymous.hashCode ^
-        isAdmin.hashCode;
+        isAdmin.hashCode ^
+        token.hashCode;
   }
 }

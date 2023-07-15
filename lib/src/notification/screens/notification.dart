@@ -11,6 +11,7 @@ import 'package:my_project/src/notification/components/notif_tile.dart';
 
 class NotificationWidget extends StatefulWidget {
   const NotificationWidget({super.key});
+  static const route = '/notification-screen';
 
   @override
   State<NotificationWidget> createState() => _NotificationWidgetState();

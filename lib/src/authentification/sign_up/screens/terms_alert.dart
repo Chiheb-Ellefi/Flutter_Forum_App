@@ -8,6 +8,7 @@ import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/constants/strings.dart';
 import 'package:my_project/src/authentification/sign_in/components/sign_in_button.dart';
 import 'package:my_project/src/authentification/verify_email/screens/verify_email.dart';
+import 'package:my_project/src/notification/webservcies/firebase_notification_api.dart';
 
 // ignore: must_be_immutable
 class TermsAlert extends StatefulWidget {
@@ -28,6 +29,7 @@ class TermsAlert extends StatefulWidget {
 }
 
 class _TermsAlertState extends State<TermsAlert> {
+  FirebaseApi api = FirebaseApi();
   String? imageUrl;
   CollectionReference get users =>
       FirebaseFirestore.instance.collection(usersCollection);
@@ -64,6 +66,7 @@ class _TermsAlertState extends State<TermsAlert> {
                       userName: widget.userName,
                       phoneNumber: widget.phoneNumber,
                       dob: widget.dob);
+                  await api.saveFcmToken();
 
                   if (result == null) {
                     print('error signing in');

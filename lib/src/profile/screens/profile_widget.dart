@@ -26,7 +26,7 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  String? image, userName;
+  String? image, userName, token, name;
   List? followers = [], topics = [], myFollowing = [];
   String uid = FirebaseAuth.instance.currentUser!.uid;
   late Query<TopicModel> queryTopic;
@@ -48,6 +48,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         topics = userData.topics ?? [];
         isFollowing = followers!.contains(uid);
         followText = isFollowing ? 'UnFollow' : 'Follow';
+        token = userData.token;
       });
     }
   }
@@ -57,6 +58,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     if (mounted) {
       setState(() {
         myFollowing = userData!.following ?? [];
+        name = userData.username;
       });
     }
   }
@@ -157,6 +159,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
                     onPressed: () {
                       service.follow(
+                          token: token,
+                          name: name,
                           isFollowing: isFollowing,
                           followText: followText,
                           followers: followers,

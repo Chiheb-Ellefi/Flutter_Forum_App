@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/src/add_topic/webserices/add_topic_service.dart';
 import 'package:my_project/src/topics/components/tag.dart';
 import 'package:my_project/src/topics/screens/display_topic.dart';
 
@@ -36,9 +37,30 @@ class Topic extends StatefulWidget {
 }
 
 class _TopicState extends State<Topic> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (mounted) {
+      getUserToken();
+    }
+  }
+
+  String? mToken;
+  getToken() async {
+    AddTopicService service = AddTopicService();
+    final token = await service.getToken(widget.authorUid);
+    return token;
+  }
+
+  getUserToken() async {
+    mToken = await getToken();
+  }
+
   onPressed() {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => DisplayTopicWidget(
+              token: mToken!,
               authorUid: widget.authorUid!,
               uid: widget.uid,
               title: widget.title,

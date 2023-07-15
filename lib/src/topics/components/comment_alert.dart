@@ -10,7 +10,8 @@ import 'package:my_project/src/topics/webservices/comment_service.dart';
 class CommentAlert extends StatefulWidget {
   CommentAlert({
     Key? key,
-    required this.uid,
+    required this.token,
+    required this.topicUid,
     required this.author,
     required this.enabled,
     required this.authorUid,
@@ -18,7 +19,8 @@ class CommentAlert extends StatefulWidget {
     required this.onCommentAdded,
   });
 
-  String uid;
+  String topicUid;
+  String token;
   String author;
   bool enabled;
   String authorUid;
@@ -50,10 +52,11 @@ class _CommentAlertState extends State<CommentAlert> {
               onPressed: () {
                 if (_controller.text.trim().isNotEmpty) {
                   service.addComment(
+                      token: widget.token,
                       title: widget.title,
                       author: widget.author,
                       controller: _controller,
-                      uid: widget.uid,
+                      topicUid: widget.topicUid,
                       userUid: userUid,
                       authorUid: widget.authorUid,
                       onCommentAdded: widget.onCommentAdded);

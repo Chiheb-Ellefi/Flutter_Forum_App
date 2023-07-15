@@ -5,6 +5,7 @@ import 'package:my_project/src/authentification/sign_in/components/sign_in_butto
 import 'package:my_project/src/authentification/change_password/screens/reset_password.dart';
 import 'package:my_project/src/authentification/sign_up/components/sign_up_with.dart';
 import 'package:my_project/src/authentification/local_sign_in/components/fingerprint_alert.dart';
+import 'package:my_project/src/notification/webservcies/firebase_notification_api.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -14,6 +15,8 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
+  FirebaseApi api = FirebaseApi();
+
   bool notShowPassword = true;
   final _formKey = GlobalKey<FormState>();
   String? mail, password;
@@ -23,6 +26,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       _formKey.currentState!.save();
       dynamic result = await service.fetchUser(
           mail: mail, password: password, context: context);
+      await api.saveFcmToken();
       if (result == null) {
         print('error signing in');
       }

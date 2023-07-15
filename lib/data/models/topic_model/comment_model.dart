@@ -9,12 +9,14 @@ class CommentModel {
   String? text;
   List<dynamic>? likes;
   List<dynamic>? replies;
+  String? authorUid;
   CommentModel({
     this.author,
     this.date,
     this.text,
     this.likes,
     this.replies,
+    this.authorUid,
   });
 
   CommentModel copyWith({
@@ -23,6 +25,7 @@ class CommentModel {
     String? text,
     List<dynamic>? likes,
     List<dynamic>? replies,
+    String? authorUid,
   }) {
     return CommentModel(
       author: author ?? this.author,
@@ -30,6 +33,7 @@ class CommentModel {
       text: text ?? this.text,
       likes: likes ?? this.likes,
       replies: replies ?? this.replies,
+      authorUid: authorUid ?? this.authorUid,
     );
   }
 
@@ -40,6 +44,7 @@ class CommentModel {
       'text': text,
       'likes': likes,
       'replies': replies,
+      'authorUid': authorUid,
     };
   }
 
@@ -56,6 +61,7 @@ class CommentModel {
       replies: map['replies'] != null
           ? List<dynamic>.from((map['replies'] as List<dynamic>))
           : null,
+      authorUid: map['authorUid'] != null ? map['authorUid'] as String : null,
     );
   }
 
@@ -66,7 +72,7 @@ class CommentModel {
 
   @override
   String toString() {
-    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes, replies: $replies)';
+    return 'CommentModel(author: $author, date: $date, text: $text, likes: $likes, replies: $replies, authorUid: $authorUid)';
   }
 
   @override
@@ -77,7 +83,8 @@ class CommentModel {
         other.date == date &&
         other.text == text &&
         listEquals(other.likes, likes) &&
-        listEquals(other.replies, replies);
+        listEquals(other.replies, replies) &&
+        other.authorUid == authorUid;
   }
 
   @override
@@ -86,6 +93,7 @@ class CommentModel {
         date.hashCode ^
         text.hashCode ^
         likes.hashCode ^
-        replies.hashCode;
+        replies.hashCode ^
+        authorUid.hashCode;
   }
 }

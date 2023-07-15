@@ -3,6 +3,7 @@ import 'package:my_project/constants/firebase_consts.dart';
 import 'package:my_project/data/models/notification_model/notif_model.dart';
 import 'package:my_project/data/models/user_model/user_model.dart';
 import 'package:my_project/data/webservices/utils/Utils.dart';
+import 'package:my_project/src/notification/webservcies/firebase_notification_api.dart';
 
 class FollowersService {
   Future<UserModel?> getProfilePic({uid, userRef}) async {
@@ -17,6 +18,8 @@ class FollowersService {
       myFollowers,
       myFollowing,
       uid,
+      name,
+      token,
       followerUid,
       userRef,
       notifRef}) async {
@@ -26,7 +29,12 @@ class FollowersService {
     } else {
       myFollowers!.add(uid);
       myFollowing!.add(followerUid);
-      await followNotif(notified: followerUid, notifRef: notifRef, uid: uid);
+      await followNotif(
+          notified: followerUid,
+          notifRef: notifRef,
+          uid: uid,
+          name: name,
+          token: token);
     }
 
     try {
@@ -37,8 +45,9 @@ class FollowersService {
     }
   }
 
-  followNotif({notified, notifRef, uid}) async {
+  followNotif({notified, notifRef, uid, token, name}) async {
     final notifUid = notifRef.id;
+    final api = FirebaseApi();
     NotificationModel notif = NotificationModel(
         uid: notifUid,
         notified: notified,
@@ -46,6 +55,9 @@ class FollowersService {
         notifier: uid,
         notification: 'just started following you');
     await notifRef.set(notif.toMap());
+    await api.requestPermission();
+    await api.sendPushMesssage(
+        token, 'New Follower', '$name Started following you');
   }
 
   Future<void> following(

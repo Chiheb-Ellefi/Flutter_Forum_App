@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_project/config/themes.dart';
 import 'package:my_project/src/add_topic/webserices/add_topic_service.dart';
 import 'package:my_project/src/topics/components/tag.dart';
 import 'package:my_project/src/topics/screens/display_topic.dart';
@@ -57,22 +59,55 @@ class _TopicState extends State<Topic> {
     mToken = await getToken();
   }
 
+  bool isAnonymous = FirebaseAuth.instance.currentUser!.isAnonymous;
+
   onPressed() {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => DisplayTopicWidget(
-              token: mToken!,
-              authorUid: widget.authorUid!,
-              uid: widget.uid,
-              title: widget.title,
-              userName: widget.userName,
-              date: widget.date,
-              rating: widget.rating,
-              image: widget.image,
-              text: widget.text,
-              tags: widget.tags,
-              raters: widget.raters,
-              notifEnabled: widget.notifEnabled,
-            )));
+    if (!isAnonymous) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => DisplayTopicWidget(
+                token: mToken!,
+                authorUid: widget.authorUid!,
+                uid: widget.uid,
+                title: widget.title,
+                userName: widget.userName,
+                date: widget.date,
+                rating: widget.rating,
+                image: widget.image,
+                text: widget.text,
+                tags: widget.tags,
+                raters: widget.raters,
+                notifEnabled: widget.notifEnabled,
+              )));
+    } else {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+                content: const Text(
+                  'To access the detailed topic information, please sign in to your account.',
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontSize: 18),
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: myBlue3),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child:
+                          const Text('Cancel', style: TextStyle(fontSize: 20))),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: myBlue2),
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pop(context);
+                      },
+                      child:
+                          const Text('Sign in', style: TextStyle(fontSize: 20)))
+                ],
+              ));
+    }
   }
 
   @override

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:my_project/src/authentification/sign_up/webservices/sign_up.dart';
 import 'package:my_project/config/themes.dart';
 import 'package:my_project/constants/firebase_consts.dart';
-import 'package:my_project/constants/strings.dart';
 import 'package:my_project/src/authentification/sign_in/components/sign_in_button.dart';
 import 'package:my_project/src/authentification/verify_email/screens/verify_email.dart';
 import 'package:my_project/src/notification/webservcies/firebase_notification_api.dart';
@@ -29,8 +28,22 @@ class TermsAlert extends StatefulWidget {
 }
 
 class _TermsAlertState extends State<TermsAlert> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getTerms();
+  }
+
+  getTerms() async {
+    termsOfUse = await service.getTermsOfUse();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   FirebaseApi api = FirebaseApi();
-  String? imageUrl;
+  String? imageUrl, termsOfUse;
   CollectionReference get users =>
       FirebaseFirestore.instance.collection(usersCollection);
   String? myPath;
@@ -40,11 +53,11 @@ class _TermsAlertState extends State<TermsAlert> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Center(child: Text('Terms Of Use')),
-      content: const SizedBox(
+      content: SizedBox(
           height: 400,
           child: SingleChildScrollView(
             child: Text(
-              termsOfUse,
+              termsOfUse ?? '',
               textAlign: TextAlign.justify,
             ),
           )),

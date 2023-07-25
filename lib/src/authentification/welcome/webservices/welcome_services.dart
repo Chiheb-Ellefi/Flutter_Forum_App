@@ -51,9 +51,9 @@ class WelcomeSerices {
 
   // Sign in anonymously
   Future<User?> signInAnon() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      UserCredential result = await _auth.signInAnonymously();
+      UserCredential result = await auth.signInAnonymously();
       User? user = result.user;
       return user;
     } catch (e) {

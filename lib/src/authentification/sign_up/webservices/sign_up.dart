@@ -78,4 +78,29 @@ class SignService {
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
     return null;
   }
+
+  Future<String?> getTermsOfUse() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('terms')
+        .doc('termsOfUse')
+        .get();
+
+    // Check if the snapshot contains any data
+    if (snapshot.exists) {
+      // Safely access the data
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      print(snapshot);
+
+      // Check if the 'terms' key exists and if its value is a String
+      if (data != null &&
+          data.containsKey('terms') &&
+          data['terms'] is String) {
+        print(data['terms']);
+        return data['terms'] as String;
+      }
+    }
+
+    // If anything fails, return null
+    return null;
+  }
 }

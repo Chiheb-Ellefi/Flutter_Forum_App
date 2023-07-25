@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_project/main.dart';
 import 'package:my_project/src/authentification/welcome/webservices/welcome_services.dart';
 import 'package:my_project/config/themes.dart';
 
@@ -70,12 +71,20 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   alignment: FractionalOffset.bottomCenter,
                   child: InkWell(
                     onTap: () async {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ));
                       dynamic result = await _auth.signInAnon();
                       if (result == null) {
                         print('error signing in');
                       }
                       print('signed in');
                       print(result);
+                      navigatorKey.currentState!
+                          .popUntil((route) => route.isFirst);
                     },
                     child: const SizedBox(
                       width: double.infinity,

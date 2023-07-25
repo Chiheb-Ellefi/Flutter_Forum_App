@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_project/data/models/topic_model/topic_model.dart';
 import 'package:my_project/data/webservices/get_topic/get_topics.dart';
 import 'package:my_project/src/notification/components/notif_button.dart';
@@ -56,6 +58,7 @@ class _TopicsWidgetState extends State<TopicsWidget> {
   }
 
   bool isSearching = false;
+  bool isAnonymous = FirebaseAuth.instance.currentUser!.isAnonymous;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +94,35 @@ class _TopicsWidgetState extends State<TopicsWidget> {
             iconSize: 30,
             color: Colors.black87,
           ),
-          const MyNotifButton(),
+          if (!isAnonymous) const MyNotifButton(),
+          if (isAnonymous)
+            PopupMenuButton(
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: Colors.black87,
+                  size: 30,
+                ),
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                          onTap: () {
+                            FirebaseAuth.instance.signOut();
+                          },
+                          child: const Row(
+                            children: [
+                              Icon(
+                                FontAwesomeIcons.arrowRightFromBracket,
+                                color: Colors.black87,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Sign out',
+                                style: TextStyle(fontSize: 20),
+                              )
+                            ],
+                          )),
+                    ]),
         ],
       ),
       body: Column(
@@ -154,7 +185,7 @@ class _TopicsWidgetState extends State<TopicsWidget> {
                 final topic = snapshot.data();
                 return Topic(
                   authorUid: topic!.authorUid,
-                  uid: topic.uid!, // Add a unique key to each child widget
+                  uid: topic.uid!,
                   title: topic.title!,
                   userName: topic.author!,
                   date: topic.date!,

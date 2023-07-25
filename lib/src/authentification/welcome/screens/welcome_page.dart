@@ -7,6 +7,7 @@ import 'package:my_project/data/webservices/banned/check_ban.dart';
 import 'package:my_project/src/authentification/verify_email/screens/verify_email.dart';
 
 import 'package:my_project/src/authentification/welcome/screens/welcome_widget.dart';
+import 'package:my_project/src/topics/screens/topics_screen.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({Key? key});
@@ -33,18 +34,28 @@ class _WelcomeState extends State<Welcome> {
             future: services.getUser(
                 isBanned: isBanned, ban: ban, userBan: userBan),
             builder: (context, userSnapshot) {
-              if (userSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (userSnapshot.hasError) {
-                return const Center(
-                  child: Text('Error occurred!'),
-                );
-              } else if (userSnapshot.hasData) {
-                return isBanned
-                    ? _buildBannedWidget()
-                    : _buildWelcomeWidget(snapshot);
+              if (FirebaseAuth.instance.currentUser != null) {
+                bool isAnonymous =
+                    FirebaseAuth.instance.currentUser!.isAnonymous;
+                if (isAnonymous) {
+                  return const TopicsWidget();
+                } else {
+                  if (userSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (userSnapshot.hasError) {
+                    return const Center(
+                      child: Text('Error occurred!'),
+                    );
+                  } else if (userSnapshot.hasData) {
+                    return isBanned
+                        ? _buildBannedWidget()
+                        : _buildWelcomeWidget(snapshot);
+                  } else {
+                    return const WelcomeWidget();
+                  }
+                }
               } else {
                 return const WelcomeWidget();
               }
